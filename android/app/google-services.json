@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "702790967470",
+    "project_id": "soltec-295612",
+    "storage_bucket": "soltec-295612.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702790967470:android:bd3fbdc68e4dbeff594d3f",
+        "android_client_info": {
+          "package_name": "com.firebaseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702790967470-4qs91uqrup66552b0p6nk5d3vn0unerk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7tMKg5og6a3Y-aRwOxS_-g9cuqY4a7KY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702790967470-4qs91uqrup66552b0p6nk5d3vn0unerk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
