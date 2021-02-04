@@ -15,7 +15,7 @@ import {
     ContainerBox,
     BackgroundButton,
     ContainerBoxDiv,
-    style,
+    
     CloseButton,
     CloseButtonText,
     AddButton,
