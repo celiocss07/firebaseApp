@@ -3,10 +3,10 @@ import { Platform, StyleSheet, Text, View } from 'react-native'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 export default function Search( props) {
-
+    
     const { onLocationSelected } = props
     const [searchFocused, setSearchFocused ] = useState( null)
-
+    navigator.geolocation = require("react-native-geolocation-service")
     return (
         <GooglePlacesAutocomplete
             placeholder='Para onde?'
@@ -15,8 +15,14 @@ export default function Search( props) {
             query={{
               key: 'AIzaSyBPFyNBUARMRtPaEGFYZEEL-_ZId8fwRuc',
               language: 'pt',
+              components: 'country:ao',
             }}
+            currentLocation={true}
+            currentLocationLabel='Current location'
+
             textInputProps={{
+                
+                
                 onFocus: () => { setSearchFocused("auto")},
                 onBlur: () => { setSearchFocused(null)},
                 autoCapitalize: "none",

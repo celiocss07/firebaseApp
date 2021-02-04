@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { View, Text } from 'react-native'
 import Modal from 'react-native-modal';
 import RadioButtonRN from 'radio-buttons-react-native';
+import axios from 'axios'
+import api from './../../api'
 
 import { 
     Container, 
@@ -25,7 +27,8 @@ import {
 import planos from './../../assets/car.jpg'
 
 
-export default function Details() {
+export default function Details( props ) {
+    console.log("Tela de Detalhes => ",props)
 
     const [selectedPlan, setSelectedPlan] = useState('Economico')
     const [payMethod, setPayMethod] = useState('Multicaixa')
@@ -66,23 +69,84 @@ export default function Details() {
     function lessPassenger() {
         passanger == 1 ? setPassanger(4) : setPassanger(passanger - 1)
     }
+    function notify(dataInfo, token) {
+console.log("tokennnn => ", token)
+        axios.post("https://fcm.googleapis.com/fcm/send",{
+            "data": {dataInfo}, 
 
-    function handleSubmit(){
-        const data = { 
-            way: selectedPlan,
-            passanger,
-            payMethod,
+            "notification":{
+                    "body":"This is an FCM notification message!",
+                    "title":"FCM Message"
+                  },
+            "registration_ids":token
+        },{
+            headers: {
+           
+                'Content-Type': 'application/json',
+                'Authorization': 'key=AAAAo6GbIK4:APA91bFzcFr2Vk7vLeqSxtLX6u5q6dP5AUJtRVCn3lpaSvy3kyq6rcNErXnuC3EWyvf9FlyAo3eAXQ5zXXwhuPYa2AHl6bBQlWcrmoezbYyI8I_MxqBw-ef4Z59TPxBTeOXPWm8CkQDN',
+                
+        
+            }
+        }).then( Response => {
+            console.log("Feito com sucesso notify => ",Response.data)
+        })
+        .catch(err => {
+            console.log("erro ao enviar notify", err.response.data)
+        })
+    } 
 
-            
+    async function  handleSubmit(){
+        const data = await props.data
+        data.passenger = await passanger
+        data.paymethod = payMethod=="Multicaixa" ? "card" : "cash"
+        
+        
+        await api.post("/confirm-drive",{
+
+            ...data,
+ 
         }
+        ).then( async (Response) => {
+            console.log("Feito com sucesso => ",Response.data)
+            console.log("Dados => ",data)
+
+           await  api.get('/driver-player-id')
+              .then( async(response) => {
+                  console.log(" GET=> ",response.data.info)
+                  let array = []
+                  await response.data.info.map((item,index) => {
+                      console.log(item)
+                      if(item)array.push(item)
+                      
+                  })
+                  console.log(array)
+                  await  notify(Response.data,array)
+                })
+              .catch(err => console.log("Token not GET=> ", err.response.data))
+            
+          
+        })
+        .catch(err => {
+            console.log("erro ao enviar", err.response.data)
+        })
+
+
     }
+    function handle(){
+
+    }
+    useEffect( 
+        ( ) =>{
+            console.log("first => ", props.data.distance)
+        },[]
+    )
 
 
 
 
 
     return (
-        <Container>
+        <Container aux = { () => {return false} } >
            
             <Modal isVisible={isVisible} >
                 <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
@@ -173,13 +237,18 @@ export default function Details() {
                     <TypeTitle>Cotaçao</TypeTitle>
 
                     <ContainerBox2>
-                        <TypeTitle> AO { Math.floor(price)}</TypeTitle>
+                        <TypeTitle> AO { props.data.price}</TypeTitle>
                     </ContainerBox2>
                 </ContainerBoxDiv>
                 
             </ContainerBox2>
             
-            <RequestButton onPress = { () => { }} >
+            <RequestButton 
+                onPress = { async () => { 
+                    await handleSubmit()
+                    
+                
+                }} >
                 <RequestButtonText>
                     Viajar agora
                 </RequestButtonText>
