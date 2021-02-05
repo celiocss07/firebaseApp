@@ -1,4 +1,4 @@
-import React,{useState, createRef} from 'react';
+import React,{useState, createRef, useEffect} from 'react';
 import {View, Text, TouchableOpacity, Image, TextInput, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import { DrawerLayoutAndroid} from 'react-native';
 
@@ -12,6 +12,7 @@ import Styles from './style';
 function Menu({navigation}) {
     
     const [destination, setDestination] = useState(null)
+    const [photo, setPhoto] = useState("https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg")
         
         var navigationView = (
           
@@ -128,6 +129,31 @@ function Menu({navigation}) {
             aux.current.openDrawer()
             
         }
+
+        async function getMyObject() {
+          console.log("CHEGOU")
+        try {
+          const jsonValue = await AsyncStorage.getItem('photo')
+         //jsonValue = JSON.parse(jsonValue)
+         console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
+         setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
+         console.log('Pegou')
+        } catch(e) {
+          // read error
+          console.log("ERRO ", e)
+        }
+      
+       
+      
+      }
+
+      useEffect(() => {
+        getMyObject()
+        return () => {
+          
+        }
+      }, [ ])
+
         return (
             < DrawerLayoutAndroid
                 drawerWidth={ 300}
@@ -168,7 +194,7 @@ function Menu({navigation}) {
                     >
 
                         <Image 
-                            source= { require('../Imagens/imagem_pass.png')}
+                            source= { {uri:photo}}
                             style= { Styles.logoPerfil}
                         />
                     </TouchableOpacity>

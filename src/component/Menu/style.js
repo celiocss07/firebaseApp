@@ -11,7 +11,7 @@ const Styles =  StyleSheet.create({
         alignItems:"center",
         backgroundColor:"rgb(0,160,210)",
         width: "100%",
-        height:"8%",
+        height:50,
         padding:8
     },
     containerMenu: {
@@ -43,7 +43,7 @@ const Styles =  StyleSheet.create({
     },
     logoPerfil: {
         width: 40,
-        height: "100%",
+        height: 40,
         borderRadius: 100
     },
     logoMenu: {

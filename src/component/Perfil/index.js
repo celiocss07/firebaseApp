@@ -128,11 +128,12 @@ console.log("AAAAAA => ", oldPassword)
         setAvatar(data)
       }
       const options = {
-        title: 'Select Avatar',
+        title: 'Escolhe sua foto',
         storageOptions: {
           skipBackup: true,
           path: 'images',
         },
+        
       };
 
 
@@ -202,6 +203,7 @@ async function setObjectValue(value){
     useEffect(  ()=> {
         
          info()
+         getMyObject()
 
 
     }, [])
