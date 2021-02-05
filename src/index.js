@@ -42,8 +42,8 @@ function App() {
           <Stack.Screen name="Login" component={loginScreen} options={{headerShown:false}} />
           <Stack.Screen name="Verificacao" component={verifScreen} options={{headerShown:false}} />
           <Stack.Screen name="Cadastro" component={cadastroScreen} options={{headerShown:false}} />
-          {/*<Stack.Screen name="Perfil" component={Perfil}  />
-          <Stack.Screen name="Sobre" component={Sobre}  />*/}
+          <Stack.Screen name="Perfil" component={Perfil}  />
+          <Stack.Screen name="Sobre" component={Sobre}  />
         
         </Stack.Navigator>
 
