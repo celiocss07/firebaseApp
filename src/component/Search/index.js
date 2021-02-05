@@ -17,8 +17,7 @@ export default function Search( props) {
               language: 'pt',
               components: 'country:ao',
             }}
-            currentLocation={true}
-            currentLocationLabel='Current location'
+            
 
             textInputProps={{
                 
