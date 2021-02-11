@@ -13,7 +13,7 @@ export default function Login( props) {
     
     const [buttonLoading, setButtonLoading] = useState(false);
     const [password, setPassword] = useState("");
-    const [iddriver, setiddriver] = useState("");
+    const [user, setUser] = useState("");
     const [status, setStatus] = useState("Null");
     const [display, setDisplay] = useState('none');
     const [showAlert, setShowAlert] = useState(false);
@@ -24,12 +24,14 @@ export default function Login( props) {
     async function intialLogin() {
         setButtonLoading(true)
         // console.log(this.state.data)
-         //const { password, iddriver} = this.state.data
-         console.log("Credenciasi => ",password, iddriver)
+         //const { password, user} = this.state.data
+         console.log("Credenciasi => ",password, user, user.match("@"))
        await api.post('/login',{
             
                 password:password,
-                username: iddriver
+                phonenumber: user.match("@") ? "" : user,
+                email: user.match('@') ? user : ""
+
                 
 
          })
@@ -47,13 +49,13 @@ export default function Login( props) {
         .catch( async err => {
             if(err.response){
                     
-                console.log("cdkwmc",err.response.data)
+                console.log("cdkwmc",err.response)
                 
                 await AsyncStorage.clear()
                 await setButtonLoading(false)
                 setColorButton('red')
-                setMessageModal(`Password ou ID-DRIVER errado!`)
-                setTitleModal("Erro de conexão")
+                setMessageModal(`Usuário ou senha errado!`)
+                setTitleModal("Dados incorrectos")
                 setShowAlert(true)
 
             }else{
@@ -115,9 +117,12 @@ export default function Login( props) {
             <View style = {Style.containerForm}>
 
                   <TextInput 
-                        placeholder = "Nome ou Telefone" 
+                        placeholder = "Telefone ou E-mail" 
                         style = {Style.inputForm}
-                        onChangeText = { text => setiddriver(text) }
+                        onChangeText = { text => setUser(text) }
+                        autoCapitalize={"none"}
+                        keyboardType={"email-address"}
+                        autoCorrect={false}
                       />
 
                   <TextInput 
@@ -125,6 +130,9 @@ export default function Login( props) {
                         style = { Style.inputForm} 
                         secureTextEntry={true}
                         onChangeText = { text => setPassword(text) }
+                        autoCapitalize={"none"}
+                        autoCorrect={false}
+                        
 
                     />
                     
