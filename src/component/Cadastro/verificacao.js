@@ -38,108 +38,107 @@ export default function  Login (props) {
        })
    }
  
-    return (
-        <KeyboardAvoidingView style = { Style.container}>
+   return (
+    <KeyboardAvoidingView style = { Style.container}>
+
+        <ScrollView style={{width: "100%", padding: 16,}}>
+        <View style={Style.containerLogo}>
+            <Image 
+              source= { require('../Imagens/Logo.png')}
+              style= {Style.logo}
+             />
+             <View style={Style.containerTitle}>
+                <Text style={Style.msg('flex')}>Código de confirmação</Text>
+            </View>
+
+        </View>
             
-            <View style={Style.containerLogo}>
-                <Image 
-                  source= { require('../Imagens/Logo_2.png')}
-                  style= {Style.logo}
-                 />
-                 <View style={Style.containerTitle}>
-                    <Text style={Style.msg('flex')}>Código de confirmação</Text>
-                </View>
+          
+          <View style = {Style.containerForm}>
+
+            <View>
+                <Text style = { Style.text}> Insira o código enviado ao seu telemóvel</Text>
 
             </View>
+
                 
-              
-              <View style = {Style.containerForm}>
-
-                <View>
-                    <Text style = { Style.text}> Insira o código enviado ao seu telemóvel</Text>
-
-                </View>
-
-                    
-                <View style={Style.containerInput}>
-                
-                      <TextInput  style = { Style.inputForm}
-                      
-                          onChangeText = { text => {
-                            secondtInput.current.focus()
-                            setCode1(text)
-                          }}
-                          returnKeyType={"next"}
-                        
-                      />
-
-                      <TextInput  style = { Style.inputForm}
-                      
-                      onChangeText = { text => {
-                        setCode2(text)
-                        
-                        threeInput.current.focus()
-                        
-                      }
-                      }
-                      returnKeyType={"next"}
-                      ref={secondtInput}
-                      />
-
-                      <TextInput  style = { Style.inputForm}
-                      
-                      onChangeText = { text => {
-                        fourthInput.current.focus()
-                        setCode3(text)
-                      }
-                      }
-                      returnKeyType={"next"}
-                      ref={threeInput}
-
-                      />
-                      <TextInput  style = { Style.inputForm}
-                      
-                      onChangeText = { text => {
-                        fivethInput.current.focus()
-                        setCode4(text)
-                        }}
-                        returnKeyType={"next"}
-                        ref={fourthInput}
-
-                      />
-                      <TextInput  style = { Style.inputForm}
-                      
-                      onChangeText = { text => setCode5(text)
-                      }
-                      returnKeyType={"send"}
-                      ref={fivethInput}
-                      onSubmitEditing={ () => intialLogin()}
-                      
-                      />
-                     
-                </View>
+            <View style={Style.containerInput}>
+            
+                  <TextInput  style = { Style.inputForm}
                   
-                 
-              </View>
-  
-              <View style = {{ marginBottom:32}}>
-                      <Text style = {{fontSize:13}}> <Text style = {{ color: 'red',fontSize:16}}>Não recebeu o código?</Text></Text>
-              </View>
-  
-              <View>
-                  <TouchableOpacity 
-                    style = {{ width:152, height:49, backgroundColor: 'rgb(0,104,138)', justifyContent:'center',alignItems:'center', borderRadius: 5}}
-                    onPress = {() => {
-                       setCode(code1+code2+code3+code4+code5)
-                       intialLogin()
+                      onChangeText = { text => {
+                        secondtInput.current.focus()
+                        setCode1(text)
+                      }}
+                      returnKeyType={"next"}
+                    
+                  />
+
+                  <TextInput  style = { Style.inputForm}
+                  
+                  onChangeText = { text => {
+                    setCode2(text)
+                    
+                    threeInput.current.focus()
+                    
+                  }
+                  }
+                  returnKeyType={"next"}
+                  ref={secondtInput}
+                  />
+
+                  <TextInput  style = { Style.inputForm}
+                  
+                  onChangeText = { text => {
+                    fourthInput.current.focus()
+                    setCode3(text)
+                  }
+                  }
+                  returnKeyType={"next"}
+                  ref={threeInput}
+
+                  />
+                  <TextInput  style = { Style.inputForm}
+                  
+                  onChangeText = { text => {
+                    fivethInput.current.focus()
+                    setCode4(text)
                     }}
-                    >
-                      <Text style = {{ color: '#FFF', fontSize: 24, lineHeight: 34}}>Próximo</Text>
-                  </TouchableOpacity>
-              </View>
-  
-        </KeyboardAvoidingView>
-    )
+                    returnKeyType={"next"}
+                    ref={fourthInput}
+
+                  />
+                  <TextInput  style = { Style.inputForm}
+                  
+                  onChangeText = { text => setCode5(text)
+                  }
+                  returnKeyType={"send"}
+                  ref={fivethInput}
+                  onSubmitEditing={ () => intialLogin()}
+                  
+                  />
+                 
+            </View>
+              
+             
+          </View>
+
+        
+
+          <View style={{width:"100%", alignItems:'center'}}>
+              <TouchableOpacity 
+                style = {{ width:152, height:49, backgroundColor: '#03a9f4', justifyContent:'center',alignItems:'center', borderRadius: 5}}
+                onPress = {() => {
+                   setCode(code1+code2+code3+code4+code5)
+                   intialLogin()
+                }}
+                >
+                  <Text style = {{ color: '#FFF', fontSize: 24, lineHeight: 34}}>Próximo</Text>
+              </TouchableOpacity>
+          </View>
+          </ScrollView>
+    </KeyboardAvoidingView>
+)
   }
 
 
