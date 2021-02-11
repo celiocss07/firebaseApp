@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, Fragment} from 'react'
-import { View, Text, StyleSheet, PermissionsAndroid, Image, Alert } from 'react-native'
+import { View, Text, StyleSheet, PermissionsAndroid, Image, Alert, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import MapView, { Marker} from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
@@ -45,6 +45,7 @@ import BackImage from './../../assets/left-arrow.png'
 //import Details from '../Details';
 import planos from './../../assets/car.jpg'
 
+
 export default function Map() {
   navigator.geolocation = require("react-native-geolocation-service")
   Geocoder.init("AIzaSyBPFyNBUARMRtPaEGFYZEEL-_ZId8fwRuc")
@@ -56,11 +57,21 @@ export default function Map() {
         <Container>
             <ContainerBox style={{borderBottomWidth:1, flexDirection: "column"}}>
                 
-                <ContainerBox2 style={{justifyContent: "center", paddingLeft:16, marginBottom:8, borderBottomWidth:1, paddingBottom: 8}} >
+                <ContainerBox2 style={{justifyContent: "flex-start", paddingLeft:16, marginBottom:8, borderBottomWidth:1, paddingBottom: 8}}>
+                <ContainerBoxDiv  style={{flexDirection:"row", justifyContent:"flex-start"}}>
                     <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:40, height:40, marginRight:8}} />
 
-                    <TypeTitle style={{fontSize:29}}>{driverInfo?.username} </TypeTitle>
+                    <TypeTitle style={{fontSize:20}}>{driverInfo?.username} </TypeTitle>
                     
+                </ContainerBoxDiv>
+                <ContainerBoxDiv style={{flexDirection:"row",justifyContent:"flex-end"}} >
+                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:30, height:30, marginRight:8}} />
+                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:30, height:30, marginRight:8}} />
+                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:30, height:30, marginRight:8}} />
+
+                    
+                    
+                </ContainerBoxDiv>
                 </ContainerBox2>
 
                 <ContainerBox2 style={{justifyContent: "space-between", paddingLeft:16,marginBottom:8, paddingRight:16}}  >
@@ -76,7 +87,37 @@ export default function Map() {
                     <TypeTitle style={{fontSize:16}}>Cor:  {driverInfo?.registrationcar} </TypeTitle>
                     
                 </ContainerBox2>
+
+                
+                
+                
             </ContainerBox>
+            { ok ?<Fragment>
+                   <RequestButton 
+                onPress = { async () => { 
+                    
+                    setVisivel(true)
+                
+                }} 
+                style={{
+                  backgroundColor:"red"
+                }}
+                
+                >
+                   
+                
+                <RequestButtonText>
+                    Cancelar viagem
+                </RequestButtonText>
+                </RequestButton>
+                 </Fragment>
+                 :
+                 <Fragment>
+                   
+                 </Fragment>
+            }
+            
+               
         </Container>
     )
 }
@@ -89,10 +130,12 @@ export default function Map() {
     const [selectedPlan, setSelectedPlan] = useState('Economico')
     const [payMethod, setPayMethod] = useState('Multicaixa')
     const [passanger, setPassanger] = useState(1)
-    const [price, setPrice] = useState(1345)
+    const [price, setPrice] = useState((Math.round(props.data.distance) < 3 ? priceEco?.initial_price : ((Math.round(props.data.distance) - 3) * priceEco?.fees_by_3k) + priceEco?.initial_price ))
     const [isVisible, setIsVisible] = useState(false)
     const [isVisiblePlan, setIsVisiblePlan] = useState(false)
     const Economic = useRef()
+    const [image, setImage] = useState( require('./../../assets/classe_A.jpg') );
+   
     //const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const Method = [
         {
@@ -110,6 +153,10 @@ export default function Map() {
               label: 'Plus'
              }
             ];
+            const ser = {
+              classe_A: require('./../../assets/classe_A.jpg'),
+              classe_B: require('./../../assets/Classe_B.jpg'),
+             }
     
 
     function selectPayMethod() {
@@ -117,6 +164,8 @@ export default function Map() {
     }
     function selectPlan() {
         setIsVisiblePlan(!isVisiblePlan)
+//(Math.round(props.data.distance) < 3 ? priceEco?.initial_price : ((Math.round(props.data.distance) - 3) * priceEco?.fees_by_3k) + priceEco?.initial_price )
+        
     }
 
     function addPassenger() {
@@ -147,7 +196,7 @@ console.log("tokennnn => ", token)
             console.log("Feito com sucesso notify => ",Response.data)
         })
         .catch(err => {
-          if(rr.response){
+          if(err.response){
             console.log("erro ao enviar notify", err.response.data)
           }else{
             console.log("erro ao fazer pedido", err)
@@ -160,7 +209,7 @@ console.log("tokennnn => ", token)
         const data = await props.data
         data.passenger = await passanger
         data.paymethod = payMethod=="Multicaixa" ? "card" : "cash"
-        
+        data.price = price
         
         await api.post("/confirm-drive",{
 
@@ -169,6 +218,7 @@ console.log("tokennnn => ", token)
         }
         ).then( async (Response) => {
             console.log("Feito com sucesso => ",Response.data)
+            setReserveInfo(Response.data)
             console.log("Dados => ",data)
 
            await  api.get('/driver-player-id')
@@ -179,8 +229,9 @@ console.log("tokennnn => ", token)
                     await response.data.info.map((item,index) => {
                       console.log(item)
                       if(item)array.push(item)
-                     notify(Response.data,array)
+                     
                   })
+                  notify(Response.data,array)
                   }else{
                           setColorButton('orange')
                           setMessageModal(`De momento nāo temos motoristas disponíveis, por favor tente mais tarde!`)
@@ -250,13 +301,20 @@ console.log("tokennnn => ", token)
             <Modal isVisible={isVisiblePlan} >
                 <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{backgroundColor: '#FFF', padding:24, width: '80%' }}>
-                        <Text>Selecione o metodo de pagamento</Text>
+                        <Text>Selecione o plano</Text>
                         <RadioButtonRN
                             data={Plan}
                             initial={selectedPlan=="Economico"?1:2}
                             selectedBtn={(e) => {
                                 console.log(e)
-                                
+                                if(selectedPlan=="Economico"){
+                                  setImage(ser.classe_A)
+                                  setPrice((Math.round(props.data.distance) < 3 ? priceEco?.initial_price : ((Math.round(props.data.distance) - 3) * priceEco?.fees_by_3k) + priceEco?.initial_price ))
+                                }else{
+                                  setImage(ser.classe_B)
+                                  setPrice(Math.round(props.data.distance)< 3 ? pricePlus?.initial_price : ((Math.round(props.data.distance) - 3) * pricePlus?.fees_by_3k) + pricePlus?.initial_price )
+                            
+                                }
                                 e.label == "Economico" ? setSelectedPlan("Economico") : setSelectedPlan("Plus")
                             }}
                         />
@@ -276,7 +334,7 @@ console.log("tokennnn => ", token)
                     } } 
                     style={{ backgroundColor: '#FFF'}} 
                     >
-                        <TypeImage source={planos} />
+                        <TypeImage source={image} />
                         <TypeDescription> {selectedPlan} </TypeDescription>
                 </BackgroundButton>
 
@@ -313,7 +371,7 @@ console.log("tokennnn => ", token)
                     <TypeTitle>Cotaçao</TypeTitle>
 
                     <ContainerBox2>
-                        <TypeTitle> AO { props.data.price}</TypeTitle>
+                        <TypeTitle> AO { price}</TypeTitle>
                     </ContainerBox2>
                 </ContainerBoxDiv>
                 
@@ -347,9 +405,10 @@ console.log("tokennnn => ", token)
   const [myLocation,setMyLocation] = useState({ 
     latitude:-8.827041762379073,
     longitude:13.244275691630248,
-    latitudeDelta: 0.015,
-    longitudeDelta: 0.0121
+    latitudeDelta: 0.0045,
+    longitudeDelta: 0.0045
   })
+  const [location,setLocation] = useState(null)
   const [carros, setCarros] = useState([])
   const [ destination, setDestination ] = useState(null)
   const [ myAddress, setMyaddress ] = useState(null)
@@ -357,13 +416,16 @@ console.log("tokennnn => ", token)
   const [ distance, setDistance ] = useState(null)
   const [ myToken, setMyToken ] = useState(null)
   let [aux, setAux] = useState({})
+  let [pricePlus, setPricePlus] = useState(0)
+  let [priceEco, setPriceEco] = useState(0)
   let[driverInfo , setDriverInfo] = useState(null)
   const [showAlert, setShowAlert] = useState(false);
+  const [ok, setOk] = useState(true);
   const [messageModal, setMessageModal] = useState('none');
   const [titleModal, setTitleModal] = useState('none');
   const [colorButton, setColorButton] = useState('green');
   const [alertMsgStyle, setAlertMsgStyle] = useState({fontSize:16, textAlign:'center'});
-
+  const [reserveInfo, setReserveInfo] = useState(null)
     async function permission() {
         PermissionsAndroid.requestMultiple(
               [
@@ -444,14 +506,25 @@ console.log("tokennnn => ", token)
         console.log(aux)
       }
       
-
+      function priceValues(){
+        api.get('get-fees')
+        .then( res => {
+          console.log(res.data[0].fees_by_3k,res.data[1].fees_by_3k)
+          setPriceEco(res.data[0])
+          setPricePlus(res.data[1])
+        })
+        .catch(err => {
+          console.warn(err)
+        })
+      }
       
 
       useEffect(
         () => {
           Driver()
+          priceValues()
           const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.log(remoteMessage)
+            console.log(remoteMessage.data)
             if(remoteMessage.data.accepted){
                 //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
                 console.log(JSON.parse(remoteMessage.data.accepted).username)
@@ -459,15 +532,16 @@ console.log("tokennnn => ", token)
   
                 })
                 .then( response => {
-                  console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
-                  setCarros([response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username)])
-                  setDriverInfo(response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
-                  
-                setColorButton('orange')
+                  setColorButton('orange')
                 setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
-                setMessageModal("Sua corrida foi aceite, seu motrista está a caminho!")
+                setMessageModal("Sua corrida foi aceite, seu motorista está a caminho!")
                 setTitleModal("Viagem aceite")
                 setShowAlert(true)
+                  console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
+                  setCarros([response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username)])
+                  setLocation(response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
+                  setDriverInfo(response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
+                
                 })
                 .catch( err => {
                   if(err.response){
@@ -479,13 +553,32 @@ console.log("tokennnn => ", token)
                 console.log(carros)
 
             }else if(remoteMessage.data.inLocal){
-              Driver()
+              console.log(JSON.parse(remoteMessage.data.inLocal).to)
+              setLocation({
+                latitude: JSON.parse(remoteMessage.data.inLocal).to.lat,
+                longitude: JSON.parse(remoteMessage.data.inLocal).to.lon
+              })
+              setOk(false)
+              //Driver()
+              //setDriverInfo(null)
+              //setColorButton('orange')
+              //setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
+              //setMessageModal("A Call Táxi deseja-lhe uma boa viagem!")
+              //setTitleModal("Viagem pronta")
+              //setShowAlert(true)
+            }else if(remoteMessage.data.finished){
+              console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
+              setOk(true)
               setDriverInfo(null)
-              setColorButton('orange')
+              
+              setLocation(null)
+              setColorButton('green')
               setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
-                setMessageModal("Seu motorista está pronto para viagem, por favor dirija-te ao local de recolha!")
-                setTitleModal("Viagem pronta")
-                setShowAlert(true)
+              setMessageModal(`O valor da sua viagem é ${JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price} Kz \n Obrigado por viajar com a Call Táxi!`)
+              setTitleModal("Viagem Terminanda")
+              setShowAlert(true)
+              driverImage()
+              setOk(true)
             }
           });
           messaging()
@@ -507,7 +600,7 @@ console.log("tokennnn => ", token)
 
 
           requestUserPermission()
-          Geolocation.getCurrentPosition(
+          Geolocation.watchPosition(
             async ({ coords: { latitude, longitude}}) => {
                 const response = await Geocoder.from({latitude,longitude})
                 const address = response.results[0].formatted_address.split(',')
@@ -516,8 +609,8 @@ console.log("tokennnn => ", token)
                 setMyLocation({
                     latitude,
                     longitude,
-                    latitudeDelta: 0.015,
-                    longitudeDelta: 0.0121
+                    latitudeDelta: 0.0045,
+                    longitudeDelta: 0.0045
                 })
             },
             ( error) => {
@@ -526,13 +619,13 @@ console.log("tokennnn => ", token)
             },
             {
               enableHighAccuracy: true,
-              maximumAge:10000,
-              timeout: 10000,
-              forceRequestLocation: true
+              timeout: 20000,
+              maximumAge: 10000,
+              distanceFilter: 50
             }
           )
           return unsubscribe;
-        },[]
+        },[myLocation]
       )
 
         function handleLocationSelected( data, { geometry }) {
@@ -548,20 +641,91 @@ console.log("tokennnn => ", token)
             )
         }
         const mapView = useRef()
+        const [visivel, setVisivel] = useState(false)
+        const [motivo, setMotivo] = useState(" ")
+        const [buttonLoading, setButtonLoading] = useState(false)
 
     return (
         <View style={styles.container}>
-          {
-            driverInfo ? 
-            <Fragment>
-                < DetailsComing />
-            </Fragment>
-            :
-            <Fragment>
-              
-            </Fragment>
-          }
+         
+          <Modal
+        
+        isVisible={visivel}
+        animationInTiming={1000}
+        animationOutTiming={1000}
+        backdropTransitionInTiming={800}
+        backdropTransitionOutTiming={800}>
+          <View style={{width:"100%", height: "100%", justifyContent:"center", alignItems:"center"}}>
+
+<View style={{width: "100%", backgroundColor:"#FFF", padding:16}}>
+
+    <View style={{width:"100%", alignItems:"center"}}>
+      <Text style={{fontSize: 19.5, fontWeight:"bold", marginBottom: 16}}>
+          Qual é o motivo do cancelamento?
+      </Text>
+      <TextInput placeholder="Descreva o motivo do cancelamento" 
+      textContentType={"fullStreetAddress"}
+
+      onChange={ (e) => {
+        setMotivo(e)
+      }}
+      value={motivo}
+                style={{width:"90%", borderColor: "rgb(0,104,138)", borderWidth: 1, borderRadius:10 }} 
+      />
+
+      <TouchableOpacity 
+            onPress = { () => {
+              setButtonLoading(true)
+              console.log("CONSOLE",reserveInfo)
+              api.post('cancel-reserve-retracting',{
+                idreserve: reserveInfo?.reservecode,
+                // description: motivo
+              })
+              .then( res => {
+                console.log("reserva cancelada => ", res.data)
+      
+                //notify(reserveInfo,res.data.players_id)
+                setDriverInfo(null)
+                setReserveInfo(null)
+                handleBack()
+                setVisivel(false)
+                setMotivo(" ")
+                setButtonLoading(false)
+              })
+              .catch( err => {
+                if(err.response){
+                  console.log("Falha ao cancelar viagem => ", err.response.data)
+                }else{
+                  console.log("ERRO NOT CANCELED ", err)
+                }
+              })
+
+            }}
+            style={{width:"90%", backgroundColor: "rgb(0,104,138)", borderRadius: 10,marginTop:32, height: 40, justifyContent: "center", alignItems:"center"}}
+            
+            >
+              {
+                                buttonLoading ? <ActivityIndicator size="small" color="#FFF" />
+                                : <Text style={{fontWeight: "bold", fontSize: 19.5, color:"#FFF"}}>
+                                Enviar 
+                              </Text>
+                            }
           
+      </TouchableOpacity>
+    </View>
+    
+</View>
+
+<CloseButton onPress = { ( ) => { 
+                        setVisivel(false)
+                    }}
+                      
+                    >
+                        <CloseButtonText>X</CloseButtonText>
+                    </CloseButton>
+
+</View>
+      </Modal>
           <AwesomeAlert
           show={showAlert}
           showProgress={false}
@@ -585,6 +749,9 @@ console.log("tokennnn => ", token)
           showsUserLocation
           loadingEnabled
           ref={ mapView}
+          zoomControlEnabled={true}
+          zoomEnabled={true}
+
         >
           {
             driverInfo ? (
@@ -592,7 +759,7 @@ console.log("tokennnn => ", token)
 
                     < Directions 
                           origin={myLocation}
-                          destination={{latitude: driverInfo.latitude,longitude: driverInfo.longitude}}
+                          destination={{latitude: location.latitude,longitude: location.longitude}}
                           onReady={  async (result ) => {
                             console.log(result, driverInfo)
                             //setDuration(result.duration)
@@ -643,7 +810,9 @@ console.log("tokennnn => ", token)
                               "price": (Math.floor(result.distance) < 3 ? 1000 : ((Math.floor(result.distance) - 3) * 200) + 1000 ),
                               "expectedduration":Math.floor(result.duration),
                               "distance": Math.floor(result.distance),
-                              "player_id": myToken
+                              "player_id": myToken,
+                              "timeinit": "00:00",
+                              "timeout": "00:00"
                             })
                             handleSubmit()
                            
@@ -689,6 +858,16 @@ console.log("tokennnn => ", token)
           }
             
         </MapView>
+        {
+            driverInfo ? 
+            <Fragment>
+                < DetailsComing />
+            </Fragment>
+            :
+            <Fragment>
+              
+            </Fragment>
+          }
         {
           destination 
             ? <Fragment>
