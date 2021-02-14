@@ -66,6 +66,27 @@ function Menu({navigation}) {
                           <Text style={Styles.itemText}>Histórico</Text>
 
                     </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={Styles.item}
+                      onPress={ () => navigation.navigate('Politica')}
+                    >
+                      <Image 
+                        source= { require('../Imagens/icons8_Online_Support_28px.png')}
+                        
+                    />
+                          <Text style={Styles.itemText}>Política de Privacidade</Text>
+
+                    </TouchableOpacity><TouchableOpacity 
+                      style={Styles.item}
+                      onPress={ () => navigation.navigate('Termos_uso')}
+                    >
+                      <Image 
+                        source= { require('../Imagens/icons8_Online_Support_28px.png')}
+                        
+                    />
+                          <Text style={Styles.itemText}>Termos de Uso</Text>
+
+                    </TouchableOpacity>
 
                     <TouchableOpacity 
                       style={Styles.item}
