@@ -28,7 +28,7 @@ async function info(){
 let api =  axios.create({
     
     baseURL: 'https://api.dahora.ao/api',
-    timeout: 60000,
+    timeout: 10000,
     headers: {
            
         'Content-Type': 'application/json',
