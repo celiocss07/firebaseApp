@@ -40,10 +40,9 @@ export default function Perfil( props) {
          token =  JSON.parse(token)
          console.log("JOGANDO => ",token)
          setToken(token.token)
-         
          token = token.user
          //console.log(token)
-         setPhoto(token.fotoname ? token.fotoname : "./../Imagens/Login.png")
+       
         setUserName(token.username)
         setUserEmail(token.email)
         setUserPhoneNumber(token.phonenumber)
@@ -144,7 +143,7 @@ console.log("AAAAAA => ", oldPassword)
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
          console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
-         //setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
+         setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
          console.log('Pegou')
         } catch(e) {
           // read error
@@ -194,7 +193,7 @@ async function setObjectValue(value){
               const formData = await new FormData();
               await formData.append("profile", {
                 uri: response.uri,
-                name: response.fileName || "profile_photo.png",
+                name: response.fileName || `${userName}.png`,
                 type:response.type || "image/png"
               });
 
@@ -203,15 +202,14 @@ async function setObjectValue(value){
                   'Content-Type': 'multipart/form-data'
                 }
               })
-              .then(res => {
+              .then(async res => {
                 console.log(res.data)
+                await removeValue()
+                await setObjectValue({uri: res?.data?.profile_url})
               })
               .catch(err => {
                 console.log(" eRRO ao subir",err)
-              })
-             await  removeValue()
-             await  setObjectValue(source)
-                //console.log("Caminho => ",source)
+              })   //console.log("Caminho => ",source)
               // You can also display the image using data:
               // const source = { uri: 'data:image/jpeg;base64,' + response.data };
           

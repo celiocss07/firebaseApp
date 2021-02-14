@@ -1,5 +1,5 @@
 import React, {useEffect, useState, Fragment} from 'react';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList}  from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList, Linking}  from 'react-native';
 import Styles from './style';
 import api from '../../api'
 
@@ -24,10 +24,11 @@ const Notificacoes = () => {
 
     ]
     async function getNotify(){
-        api.get("get-notification")
+        api.post("get-notification")
         .then(res => {
             if(res.status == 200){
                 console.log("Há dados", res.data)
+                setNotify(res.data)
                 setLoading(false)
             }else{
                 console.log("Não Há dados", res.data)
@@ -68,8 +69,50 @@ const Notificacoes = () => {
                           </View>
                       </Fragment>
                       :
-                      <Fragment>
+                      <Fragment >
+                          <FlatList
+                      data={notify}
+                      style = {{width: "90%" }}
+                      keyExtractor = {(item) => `${item.idnotification}`}
+                      showsVerticalScrollIndicator={false}
+                      renderItem={({item}) => (
+                      
+                          <TouchableOpacity
+                              onPress = { () => {
+                                Linking.openURL(item.link)
+                              }}
+                              
+                              style = {Styles.item}
+                          >
+                                <View style={Styles.title}>
+                                    <Text style = {Styles.titleText}>  {item.title} </Text>
 
+                                </View>
+
+                                <View style={{}}>
+                                    <Text style = {{}}>  {item.description} </Text>
+
+                                </View>
+
+                                {
+                                    item?.link ?
+                                    <TouchableOpacity 
+                                        onPress={ ( ) => {
+
+                                        }}
+                                        style={Styles.btnLink}
+                                    > 
+                                        <Text style={Styles.btnLinkText}>Acessar</Text>
+
+                                    </TouchableOpacity>
+                                    :
+                                    <Fragment>
+
+                                    </Fragment>
+                                }
+                          </TouchableOpacity>
+                      )}
+                  />
                       </Fragment>
                   }
               </Fragment>

@@ -6,9 +6,19 @@ import { View, StyleSheet } from 'react-native';
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
+        
+        alignItems: "center",
+       paddingTop: 16
+    },
+    title:{
+        width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        padding: 16
+        marginBottom:8
+    },
+    titleText: {
+        color: "black",
+        fontSize: 18
     },
     containerDesc: {
         width: "90%",
@@ -16,20 +26,10 @@ const Styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 24
     },
-    desc: {
-        fontSize: 13,
-        fontStyle: "italic",
-        textAlign: "justify"
-    },
-    items: {
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center"
-    },
+   
 
     item: {
         width: "100%",
-        flexDirection: "row",
         backgroundColor:"#FFF",
         borderColor: "#603915",
         borderRadius: 5,
@@ -42,32 +42,21 @@ const Styles = StyleSheet.create({
         justifyContent: "space-between"
 
     },
-    containerImg: {
-        width: "30%",
+    btnLink :{
+        width: "100%",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor:"rgb(0,160,210)",
+        padding: 8,
+        borderRadius: 10,
+        marginTop: 16
     },
-    img: {
-       
-        
-    },
-    containerTexto: {
-        justifyContent: "center",
-        width: "70%"
-    },
-    texto: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "#000",
-        lineHeight: 23
-    },
-    desc2: {
-      fontSize: 13,
-        color: "#000",
-        lineHeight: 23,
-        marginLeft: 8
-    }
+    btnLinkText:{
+        color: "#fff",
 
+    }
+    
+    
 
 
 
