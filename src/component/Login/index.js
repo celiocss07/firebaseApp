@@ -49,14 +49,24 @@ export default function Login( props) {
         .catch( async err => {
             if(err.response){
                     
-                console.log("cdkwmc",err.response)
+                if(err.response.status == 401){
+                    if(err.response.data.msg == "Invalid login, require validate login"){
+                        console.log("Registed",err.response.data)
+                        props.navigation.navigate('Verificacao')
+                        await setButtonLoading(false)
+                    }else{
+                        await AsyncStorage.clear()
+                        await setButtonLoading(false)
+                        setColorButton('red')
+                        setMessageModal(`Usuário ou senha errado!`)
+                        setTitleModal("Dados incorrectos")
+                        setShowAlert(true)
+                        console.log("Nao",err.response.data)
+                    }
+                }
+                console.log("cdkwmc",err.response.data)
                 
-                await AsyncStorage.clear()
-                await setButtonLoading(false)
-                setColorButton('red')
-                setMessageModal(`Usuário ou senha errado!`)
-                setTitleModal("Dados incorrectos")
-                setShowAlert(true)
+                
 
             }else{
                 setColorButton('red')

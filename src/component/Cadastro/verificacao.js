@@ -1,5 +1,5 @@
 import React, { Component, useEffect,useState, useRef} from 'react';
-import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert, KeyboardAvoidingView,ScrollView } from 'react-native';
 import axios from "axios";
 
 import Style from './style2';

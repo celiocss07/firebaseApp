@@ -40,9 +40,10 @@ export default function Perfil( props) {
          token =  JSON.parse(token)
          console.log("JOGANDO => ",token)
          setToken(token.token)
+         
          token = token.user
          //console.log(token)
-       
+         setPhoto(token.fotoname ? token.fotoname : "./../Imagens/Login.png")
         setUserName(token.username)
         setUserEmail(token.email)
         setUserPhoneNumber(token.phonenumber)
@@ -143,7 +144,7 @@ console.log("AAAAAA => ", oldPassword)
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
          console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
-         setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
+         //setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
          console.log('Pegou')
         } catch(e) {
           // read error
@@ -178,7 +179,8 @@ async function setObjectValue(value){
       const openPicker = () => {
        
         ImagePicker.showImagePicker(options, async (response) => {
-            console.log('Response = ', response);
+            //console.log('Response = ', response);
+         
           
             if (response.didCancel) {
               console.log('User cancelled image picker');
@@ -189,6 +191,24 @@ async function setObjectValue(value){
             } else {
                await  setPhoto(response.uri)
               const source =  { uri: response.uri };
+              const formData = await new FormData();
+              await formData.append("profile", {
+                uri: response.uri,
+                name: response.fileName || "profile_photo.png",
+                type:response.type || "image/png"
+              });
+
+              await api.post("/upload",formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              })
+              .then(res => {
+                console.log(res.data)
+              })
+              .catch(err => {
+                console.log(" eRRO ao subir",err)
+              })
              await  removeValue()
              await  setObjectValue(source)
                 //console.log("Caminho => ",source)

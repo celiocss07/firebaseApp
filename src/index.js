@@ -6,7 +6,8 @@ import cadastroScreen from './component/Cadastro'
 import verifScreen from './component/Cadastro/verificacao'
 import loginScreen from './component/Login';
 import Detalhes from './component/Details';
-
+import Politica from './component/Politica';
+import Termos from './component/Termos';
 import Notificacoes from './component/Notificacoes';
 import Reservas from './component/Reservas';
 import Historico from './component/Historico';
@@ -29,6 +30,8 @@ function App() {
           <Stack.Screen name="Menu" component={menuScreen}  options={{headerShown:false}}/>
           <Stack.Screen name="Mapa" component={Map}  options={{headerShown:false}}/>
 
+          <Stack.Screen name="Politica" component={Politica} options={ { headerTitle:"Política de Privacidade", headerTitleAlign: 'center'}}  />
+          <Stack.Screen name="Termos_uso" component={Termos}  options={ { headerTitle:"Termos de Uso", headerTitleAlign: 'center'}}/>
         
 
           <Stack.Screen name="Notificacoes" component={Notificacoes}  />

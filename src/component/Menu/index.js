@@ -7,11 +7,13 @@ import Map from '../Map';
 import Styles from './style';
 
 
+
+
 // 38fc263f-daad-441d-a48e-801050e92f10
 
 function Menu({navigation}) {
     
-    const [destination, setDestination] = useState(null)
+    
     const [photo, setPhoto] = useState("https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg")
         
         var navigationView = (
@@ -34,10 +36,7 @@ function Menu({navigation}) {
                       style={Styles.item}
                       onPress={ () => navigation.navigate('Notificacoes')}
                     >
-                       <Image 
-                        source= { require('../Imagens/icons8_Delete_Ticket_28px_1.png')}
-                        
-                    />
+                       
                           <Text style={Styles.itemText}>Notificações</Text>
                          
 
@@ -149,6 +148,7 @@ function Menu({navigation}) {
 
       useEffect(() => {
         getMyObject()
+
         return () => {
           
         }

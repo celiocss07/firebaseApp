@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, Fragment} from 'react'
-import { View, Text, StyleSheet, PermissionsAndroid, Image, Alert, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, PermissionsAndroid, Image, Alert, TextInput, TouchableOpacity, ActivityIndicator, Linking } from 'react-native'
 import MapView, { Marker} from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
@@ -9,6 +9,8 @@ import RadioButtonRN from 'radio-buttons-react-native';
 import axios from 'axios'
 import api from './../../api'
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { io } from "socket.io-client";
+
 
 import {
   styles, 
@@ -45,29 +47,67 @@ import BackImage from './../../assets/left-arrow.png'
 //import Details from '../Details';
 import planos from './../../assets/car.jpg'
 
+const socket = io("http://192.168.100.7:8082");
 
 export default function Map() {
   navigator.geolocation = require("react-native-geolocation-service")
   Geocoder.init("AIzaSyBPFyNBUARMRtPaEGFYZEEL-_ZId8fwRuc")
-
+    socket.on('notification',(data)=> {
+      console.log("SOCKET",data)
+})
   function DetailsComing( props ) {
+    function call(){
 
+      console.log("+++++++++callNumber ", phoneNumber);
+      let phoneNumber = driverInfo?.phonenumber;
+      if (Platform.OS !== "android") {
+        phoneNumber = `telprompt:${phoneNumber}`;
+      } else {
+        phoneNumber = `tel:${phoneNumber}`;
+      }
+      Linking.canOpenURL(phoneNumber)
+        .then(supported => {
+          if (!supported) {
+            Alert.alert("Number is not available");
+          } else {
+            return Linking.openURL(phoneNumber);
+          }
+        })
+        .catch(err => console.log(err));
+        
+    };
+ 
 
     return (
         <Container>
             <ContainerBox style={{borderBottomWidth:1, flexDirection: "column"}}>
                 
                 <ContainerBox2 style={{justifyContent: "flex-start", paddingLeft:16, marginBottom:8, borderBottomWidth:1, paddingBottom: 8}}>
-                <ContainerBoxDiv  style={{flexDirection:"row", justifyContent:"flex-start"}}>
-                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:40, height:40, marginRight:8}} />
+                <ContainerBoxDiv  style={{flexDirection:"row", justifyContent:"flex-start", width: "70%"}}>
+                    <TypeImage source={ { uri: driverInfo?.photo ? driverInfo?.photo : "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:40, height:40, marginRight:8}} />
 
                     <TypeTitle style={{fontSize:20}}>{driverInfo?.username} </TypeTitle>
                     
                 </ContainerBoxDiv>
-                <ContainerBoxDiv style={{flexDirection:"row",justifyContent:"flex-end"}} >
-                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:30, height:30, marginRight:8}} />
-                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:30, height:30, marginRight:8}} />
-                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:30, height:30, marginRight:8}} />
+                <ContainerBoxDiv style={{flexDirection:"row",justifyContent:"space-around", width: "30%"}} >
+                  <TouchableOpacity onPress={() => {
+                        call()
+                  }}
+                    style={
+                      {
+                        width: 40,
+                        height: 40,
+                        borderRadius: 100,
+                        
+                        justifyContent: "center",
+                        alignItems: "center"
+                      }
+                    }
+                  >
+                      <TypeImage source={ require('../../assets/call.png') } style={{width:32, height:32}} />
+                  </TouchableOpacity>
+                    
+                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:32, height:32, marginRight:8}} />
 
                     
                     
@@ -84,7 +124,7 @@ export default function Map() {
                 
                    
                     <TypeTitle style={{fontSize:16}}>Matricula:  {driverInfo?.registrationcar} </TypeTitle>
-                    <TypeTitle style={{fontSize:16}}>Cor:  {driverInfo?.registrationcar} </TypeTitle>
+                    <TypeTitle style={{fontSize:16}}>Cor:  {driverInfo?.rcolorcar} </TypeTitle>
                     
                 </ContainerBox2>
 
@@ -181,7 +221,8 @@ console.log("tokennnn => ", token)
 
             "notification":{
                     "body":"This is an FCM notification message!",
-                    "title":"FCM Message"
+                    "title":"FCM Message",
+                    "sound": "app_som.mp3"
                   },
             "registration_ids":token
         },{
@@ -368,7 +409,7 @@ console.log("tokennnn => ", token)
                 </ContainerBoxBtn>
 
                 <ContainerBoxDiv style={{borderLeftWidth:1}}>
-                    <TypeTitle>Cotaçao</TypeTitle>
+                    <TypeTitle>Estimativa</TypeTitle>
 
                     <ContainerBox2>
                         <TypeTitle> AO { price}</TypeTitle>
@@ -521,6 +562,7 @@ console.log("tokennnn => ", token)
 
       useEffect(
         () => {
+          console.log("LINKING", Linking.getInitialURL())
           Driver()
           priceValues()
           const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -858,6 +900,8 @@ console.log("tokennnn => ", token)
           }
             
         </MapView>
+       
+       
         {
             driverInfo ? 
             <Fragment>
