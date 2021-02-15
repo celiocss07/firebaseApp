@@ -25,7 +25,9 @@ export default function Login( props) {
         setButtonLoading(true)
         // console.log(this.state.data)
          //const { password, user} = this.state.data
+         await AsyncStorage.clear()
          console.log("Credenciasi => ",password, user, user.match("@"))
+
        await api.post('/login',{
             
                 password:password,
@@ -37,6 +39,7 @@ export default function Login( props) {
          })
         .then( async response => {
            // console.log("sms => ",response.data)
+           
             setStatus("Autorizado")
             setDisplay('none')
             props.navigation.navigate('Menu')

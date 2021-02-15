@@ -197,7 +197,7 @@ async function setObjectValue(value){
                 type:response.type || "image/png"
               });
 
-              await api.post("/upload",formData, {
+              await api.post("/upload-driver",formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }

@@ -36,7 +36,10 @@ function Menu({navigation}) {
                       style={Styles.item}
                       onPress={ () => navigation.navigate('Notificacoes')}
                     >
-                       
+                       <Image 
+                        source= { require('../../assets/notifications.png')}
+                        style={{width: 28, height: 28}}
+                    />
                           <Text style={Styles.itemText}>Notificações</Text>
                          
 
@@ -71,8 +74,8 @@ function Menu({navigation}) {
                       onPress={ () => navigation.navigate('Politica')}
                     >
                       <Image 
-                        source= { require('../Imagens/icons8_Online_Support_28px.png')}
-                        
+                        source= { require('../../assets/politicy.png')}
+                        style={{width: 28, height: 28}}
                     />
                           <Text style={Styles.itemText}>Política de Privacidade</Text>
 
@@ -81,8 +84,8 @@ function Menu({navigation}) {
                       onPress={ () => navigation.navigate('Termos_uso')}
                     >
                       <Image 
-                        source= { require('../Imagens/icons8_Online_Support_28px.png')}
-                        
+                        source= { require('../../assets/term.png')}
+                        style={{width: 28, height: 28}}
                     />
                           <Text style={Styles.itemText}>Termos de Uso</Text>
 

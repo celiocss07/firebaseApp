@@ -37,6 +37,7 @@ export default function Login( props) {
         setButtonLoading(true)
          console.log(pass, userName)
          if(userName && phoneNumber && pass && repeat_pass){
+             console.log(userName,userEmail, phoneNumber,pass, repeat_pass)
              if(userName.length < 4){
                 setColorButton('yellow')
                 setMessageModal(`Nome deve conter mais de 3 caracteres!`)
