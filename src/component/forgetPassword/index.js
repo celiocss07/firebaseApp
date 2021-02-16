@@ -43,12 +43,11 @@ export default function Login( props) {
 
        await api.put("/forget-my-pass-send-code", {
               
-            data: userName.match("@") ? "" : userName,
-            email: userName.match('@') ? userName : ""
+            phonenumber: userName
 
         })
         .then(response => {
-
+            console.log(response.config.data)
             if(response.status == 204){
                 console.log("not found")
                 setButtonLoading(false)

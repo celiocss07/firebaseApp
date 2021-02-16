@@ -35,7 +35,7 @@ function App() {
           <Stack.Screen name="Termos_uso" component={Termos}  options={ { headerTitle:"Termos de Uso", headerTitleAlign: 'center'}}/>
         
           <Stack.Screen name="ForgetPassword" component={forgetScreen} options={{headerShown:false}} />
-          <Stack.Screen name="Notificacoes" component={Notificacoes}  />
+          <Stack.Screen name="Notificacoes" component={Notificacoes} options={{headerTitle:"Notificaçōes"}}  />
           <Stack.Screen name="Reservas" component={Reservas}  />
           <Stack.Screen name="Historico" component={Historico}  />
   <Stack.Screen name="Call_Center" component={Call_Center}  />

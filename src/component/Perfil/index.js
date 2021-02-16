@@ -56,7 +56,25 @@ export default function Perfil( props) {
             if(newPassword != repeatPassword ){
             Alert.alert("Dados Incorretos!", "Password's não são idênticas...")
             }else{
-                update()
+              if(newPassword.length<6 ){
+
+                update({
+                    oldpass: oldPassword ,
+                    email:userEmail,
+                    phonenumber: userPhoneNumber,
+                    username: userName
+                })
+              }else{
+                update({
+                      oldpass: oldPassword ,
+                      password: newPassword,
+                      password_repeat: repeatPassword,
+                      email:userEmail,
+                      phonenumber: userPhoneNumber,
+                      username: userName
+                })
+              }
+                
             }
             
         }else{
@@ -67,23 +85,12 @@ export default function Perfil( props) {
         }
         //update()
     }
-    async function update(){
+    async function update(objecto){
 
         
 console.log("AAAAAA => ", oldPassword)
         setButtonLoading(true)
-        await api.put("/update-user", {
-           
-            
-                oldpass: oldPassword,
-                password: newPassword,
-                password_repeat: repeatPassword,
-                email:userEmail,
-                phonenumber: userPhoneNumber,
-                username: userName
-
-           
-       })
+        await api.put("/update-user", objecto)
         .then( async response => {
             console.log(response.data)
             //await AsyncStorage.removeItem('userData')
@@ -98,14 +105,25 @@ console.log("AAAAAA => ", oldPassword)
         .catch(err => {
 
             if(err.response){
+              if(err.response.status == 401){
+                setMessageModal("Password Incorrecta")
+                setShowAlert(true)
                 console.log("cdkwmc",err.response.data)
                 console.log(err.response.config.data)
-                setMessageModal(err.response.msg)
+              }else if(err.response.status == 409){
+                setTitleModal("Erro ao actualizar")
+                setMessageModal("Número ou E-mail já existe")
                 setShowAlert(true)
+                console.log("cdkwmc",err.response.data)
+                console.log(err.response.config.data)
+              }
+                
+                
             }else{
-                console.log("mensagem",err)
-                setMessageModal(err[0])
-                Alert.alert("Dados incompletos!")
+              setTitleModal("Erro de conexão")
+              setMessageModal("Verifique sua ligação a internet!")
+              setColorButton("red")
+              setShowAlert(true)
             }
            
             

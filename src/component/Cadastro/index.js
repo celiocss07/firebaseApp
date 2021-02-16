@@ -56,14 +56,6 @@ export default function Login( props) {
                 setTitleModal("Senhas diferentes")
                 setShowAlert(true)
                 setButtonLoading(false)
-             }else if(userEmail){
-                 if(!userEmail.match("@") && !userEmail.match(".")){
-                    setColorButton('yellow')
-                    setMessageModal(`O E-mail deve ser do tipo exemplo@servidor.dominio!`)
-                    setTitleModal("E-mail inválido")
-                    setShowAlert(true)
-                    setButtonLoading(false)
-                 }
              }else{
                 await api.post("/sign-up", {
               

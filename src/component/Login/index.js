@@ -64,7 +64,7 @@ export default function Login( props) {
                         setMessageModal(`Usuário ou senha errado!`)
                         setTitleModal("Dados incorrectos")
                         setShowAlert(true)
-                        console.log("Nao",err.response.data)
+                        console.log("Nao",err.response.config.data)
                     }
                 }
                 console.log("cdkwmc",err.response.data)

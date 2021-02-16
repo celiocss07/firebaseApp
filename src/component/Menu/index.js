@@ -1,5 +1,5 @@
 import React,{useState, createRef, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image, TextInput, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import {View, Text, TouchableOpacity, Image, BackHandler, TextInput, ImageBackground, KeyboardAvoidingView, Alert} from 'react-native';
 import { DrawerLayoutAndroid} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -172,9 +172,25 @@ function Menu({navigation}) {
 
       useEffect(() => {
         getMyObject()
+        const backAction = () => {
+          Alert.alert("Alerta!", "Deseja mesmo sair ?", [
+            {
+              text: "Cancel",
+              onPress: () => null,
+              style: "cancel"
+            },
+            { text: "YES", onPress: () => BackHandler.exitApp() }
+          ]);
+          return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          backAction
+        );
 
         return () => {
-          
+          backHandler.remove()
         }
       }, [ ])
 

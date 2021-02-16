@@ -6,8 +6,9 @@ import Geocoder from 'react-native-geocoding';
 import messaging from '@react-native-firebase/messaging';
 import Modal from 'react-native-modal';
 import RadioButtonRN from 'radio-buttons-react-native';
-import axios from 'axios'
 import api from './../../api'
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { io } from "socket.io-client";
 
@@ -49,7 +50,11 @@ import planos from './../../assets/car.jpg'
 
 const socket = io("http://192.168.100.7:8082");
 
+
+
 export default function Map() {
+  
+
   navigator.geolocation = require("react-native-geolocation-service")
   Geocoder.init("AIzaSyBPFyNBUARMRtPaEGFYZEEL-_ZId8fwRuc")
     socket.on('notification',(data)=> {
@@ -76,7 +81,7 @@ export default function Map() {
         .catch(err => console.log(err));
         
     };
- 
+    
 
     return (
         <Container>
@@ -574,14 +579,15 @@ console.log("tokennnn => ", token)
           setPricePlus(res.data[1])
         })
         .catch(err => {
-          console.warn(err)
+          console.warn(err.response.data)
         })
       }
       
 
       useEffect(
         () => {
-          console.log("LINKING", Linking.getInitialURL())
+          
+          //console.log("LINKING", Linking.getInitialURL())
           Driver()
           priceValues()
           const unsubscribe = messaging().onMessage(async remoteMessage => {
