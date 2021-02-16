@@ -10,7 +10,7 @@ import api from './../../api'
 const Historico = () => {
 
   const [loading, setLoading]  = useState(false);
-  const [referal, setReferal]  = useState();
+  const [referal, setReferal]  = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [cor, setCor]  = useState('#D34242');
    const [showAlert, setShowAlert] = useState(false);

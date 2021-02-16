@@ -86,8 +86,8 @@ console.log("AAAAAA => ", oldPassword)
        })
         .then( async response => {
             console.log(response.data)
-            await AsyncStorage.clear()
-            let userData = await AsyncStorage.setItem('userData', JSON.stringify(response.data))
+            //await AsyncStorage.removeItem('userData')
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data))
             await info()
             await setColorButton("green")
             await setButtonLoading(false)
@@ -143,7 +143,7 @@ console.log("AAAAAA => ", oldPassword)
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
          console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
-         setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
+         setPhoto(JSON.parse(jsonValue).uri? JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
          console.log('Pegou')
         } catch(e) {
           // read error
@@ -197,7 +197,7 @@ async function setObjectValue(value){
                 type:response.type || "image/png"
               });
 
-              await api.post("/upload-driver",formData, {
+              await api.post("/upload-user",formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }

@@ -32,13 +32,14 @@ const Notificacoes = () => {
                 setLoading(false)
             }else{
                 console.log("Não Há dados", res.data)
-                setMessage("Vazio")
+                setMessage("Sem notificações")
                 setLoading(false)
             }
         })
         .catch( err => {
             if(err.response){
                 console.log(err.response.data)
+                setMessage("Verifique a sua conexão de internet")
             }else{
                 console.log(err)
                 setMessage("Verifique a sua conexão de internet")

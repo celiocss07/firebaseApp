@@ -8,9 +8,9 @@ const style = StyleSheet.create({
     
     container : {
          flex: 1, 
-         alignItems: 'center',
+         
          backgroundColor:"#FFF",
-         justifyContent: "space-around"
+         
     },
     containerLogo: {
         marginTop:16,
@@ -20,6 +20,7 @@ const style = StyleSheet.create({
     logo: {
         width:200,
         height: 200
+
     },
     containerTitle: {
         width:"100%",
@@ -29,15 +30,9 @@ const style = StyleSheet.create({
     containerForm: {
         width:"100%",
         marginTop:16,
+        alignItems:"center"
         
         
-    },
-    containerInput: {
-        width: "100%",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 24
-       
     },
     inputForm: {
         backgroundColor:"#FFF",
@@ -48,13 +43,13 @@ const style = StyleSheet.create({
         borderWidth: 1,
         borderStyle: "solid",
         borderRadius: 5,
-        height: 50,
-        width:"16%"
+        height: 40,
+        width:"80%"
     },
     buttonForm: {
-        width:"100%",
+        width:"85%",
         height:42,
-        backgroundColor: "#603915",
+        backgroundColor: "rgb(0,104,138)",
         alignSelf: "center",
         borderRadius: 5,
         alignItems: "center",
@@ -70,22 +65,19 @@ const style = StyleSheet.create({
         fontSize: 19,
         color:"#FFF"
     },
-   
-    text: {
-        color: "#333",
-        marginTop:24,
-        fontSize: 13,
-        marginBottom: 8,
-    },
     msg: (text = 'none') => ({
         fontWeight:"bold",
         fontSize: 19,
         color: "#2E3094",
         marginBottom: 24,
-        marginTop:32,
         display: text
 
     }),
+    text: {
+        color: "blue",
+        marginTop:24,
+        fontSize: 19
+    }
     
 })
 export default style;

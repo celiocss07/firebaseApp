@@ -106,8 +106,27 @@ export default function Map() {
                   >
                       <TypeImage source={ require('../../assets/call.png') } style={{width:32, height:32}} />
                   </TouchableOpacity>
+
+                  <TouchableOpacity onPress={async () => {
+                        //call()
+                        url = await `sms:${driverInfo?.phonenumber}${Platform.OS === "ios" ? "&" : "?"}body=${"Olá, caro motorista!"}`
+
+                        await Linking.openURL(url);
+                  }}
+                    style={
+                      {
+                        width: 40,
+                        height: 40,
+                        borderRadius: 100,
+                        
+                        justifyContent: "center",
+                        alignItems: "center"
+                      }
+                    }
+                  >
+                      <TypeImage source={ require('../../assets/sms.png') } style={{width:32, height:32}} />
+                  </TouchableOpacity>
                     
-                    <TypeImage source={ { uri: "https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg"}} style={{width:32, height:32, marginRight:8}} />
 
                     
                     
@@ -124,7 +143,7 @@ export default function Map() {
                 
                    
                     <TypeTitle style={{fontSize:16}}>Matricula:  {driverInfo?.registrationcar} </TypeTitle>
-                    <TypeTitle style={{fontSize:16}}>Cor:  {driverInfo?.rcolorcar} </TypeTitle>
+                    <TypeTitle style={{fontSize:16}}>Cor:  {driverInfo?.colorcar} </TypeTitle>
                     
                 </ContainerBox2>
 
@@ -569,7 +588,7 @@ console.log("tokennnn => ", token)
             console.log(remoteMessage.data)
             if(remoteMessage.data.accepted){
                 //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
-                console.log(JSON.parse(remoteMessage.data.accepted).username)
+                console.log(JSON.parse(remoteMessage.data.accepted))
                 api.get("/drivers-status",{
   
                 })
@@ -579,6 +598,7 @@ console.log("tokennnn => ", token)
                 setMessageModal("Sua corrida foi aceite, seu motorista está a caminho!")
                 setTitleModal("Viagem aceite")
                 setShowAlert(true)
+                
                   console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
                   setCarros([response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username)])
                   setLocation(response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
@@ -595,7 +615,7 @@ console.log("tokennnn => ", token)
                 console.log(carros)
 
             }else if(remoteMessage.data.inLocal){
-              console.log(JSON.parse(remoteMessage.data.inLocal).to)
+              console.log(JSON.parse(remoteMessage.data.inLocal))
               setLocation({
                 latitude: JSON.parse(remoteMessage.data.inLocal).to.lat,
                 longitude: JSON.parse(remoteMessage.data.inLocal).to.lon
@@ -723,16 +743,42 @@ console.log("tokennnn => ", token)
                 idreserve: reserveInfo?.reservecode,
                 // description: motivo
               })
-              .then( res => {
+              .then( async res => {
                 console.log("reserva cancelada => ", res.data)
-      
+               await axios.post("https://fcm.googleapis.com/fcm/send",{
+                        "data": {
+                          cancelled:{
+                            idreserve: reserveInfo?.reservecode
+                        }}, 
+            
+                        "notification":{
+                                "body":"O cliente cancelou viagem...",
+                                "title":"Viagem Cancelada"
+                                
+                              },
+                              "to":`${driverInfo?.player_id}`,
+                              
+                    },{
+                        headers: {
+                       
+                            'Content-Type': 'application/json',
+                            'Authorization': 'key=AAAAo6GbIK4:APA91bFzcFr2Vk7vLeqSxtLX6u5q6dP5AUJtRVCn3lpaSvy3kyq6rcNErXnuC3EWyvf9FlyAo3eAXQ5zXXwhuPYa2AHl6bBQlWcrmoezbYyI8I_MxqBw-ef4Z59TPxBTeOXPWm8CkQDN',
+                            
+                    
+                        }
+                    }).then( Response => {
+                        console.log("cancelada com sucesso notify => ",Response.data)
+                    })
+                    .catch(err => {
+                        console.log("erro ao cancelar notify", err.response.data)
+                    })
                 //notify(reserveInfo,res.data.players_id)
-                setDriverInfo(null)
-                setReserveInfo(null)
-                handleBack()
-                setVisivel(false)
-                setMotivo(" ")
-                setButtonLoading(false)
+                await setDriverInfo(null)
+                await setReserveInfo(null)
+                await handleBack()
+                await setVisivel(false)
+                await setMotivo(" ")
+                await setButtonLoading(false)
               })
               .catch( err => {
                 if(err.response){

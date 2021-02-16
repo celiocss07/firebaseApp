@@ -4,6 +4,7 @@ import Map from './component/Map'
 import menuScreen from './component/Menu'
 import cadastroScreen from './component/Cadastro'
 import verifScreen from './component/Cadastro/verificacao'
+import forgetScreen from './component/forgetPassword'
 import loginScreen from './component/Login';
 import Detalhes from './component/Details';
 import Politica from './component/Politica';
@@ -33,7 +34,7 @@ function App() {
           <Stack.Screen name="Politica" component={Politica} options={ { headerTitle:"Política de Privacidade", headerTitleAlign: 'center'}}  />
           <Stack.Screen name="Termos_uso" component={Termos}  options={ { headerTitle:"Termos de Uso", headerTitleAlign: 'center'}}/>
         
-
+          <Stack.Screen name="ForgetPassword" component={forgetScreen} options={{headerShown:false}} />
           <Stack.Screen name="Notificacoes" component={Notificacoes}  />
           <Stack.Screen name="Reservas" component={Reservas}  />
           <Stack.Screen name="Historico" component={Historico}  />
