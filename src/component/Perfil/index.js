@@ -13,7 +13,7 @@ import ImagePicker from 'react-native-image-picker';
 
 export default function Perfil( props) {
     const [buttonLoading, setButtonLoading] = useState(false);
-    const [userPassword, setPassword] = useState("");
+    const [user, setUser] = useState(null);
     const [token, setToken] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
@@ -26,7 +26,7 @@ export default function Perfil( props) {
     const [titleModal, setTitleModal] = useState('none');
     const [colorButton, setColorButton] = useState('green');
     const [avatar, setAvatar] = useState()
-    const [photo, setPhoto] = useState("https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg")
+    const [photo, setPhoto] = useState(null)
 
     const perfil = {
         nome: "",
@@ -60,18 +60,18 @@ export default function Perfil( props) {
 
                 update({
                     oldpass: oldPassword ,
-                    email:userEmail,
-                    phonenumber: userPhoneNumber,
-                    username: userName
+                    email: userEmail!= user.email ? userEmail: "",
+                    phonenumber: userPhoneNumber != user.phonenumber ? userPhoneNumber : "",
+                    
                 })
               }else{
                 update({
                       oldpass: oldPassword ,
                       password: newPassword,
                       password_repeat: repeatPassword,
-                      email:userEmail,
-                      phonenumber: userPhoneNumber,
-                      username: userName
+                      email: userEmail!= user.email ? userEmail: "",
+                      phonenumber: userPhoneNumber != user.phonenumber ? userPhoneNumber : "",
+                    
                 })
               }
                 
@@ -88,7 +88,7 @@ export default function Perfil( props) {
     async function update(objecto){
 
         
-console.log("AAAAAA => ", oldPassword)
+console.log("AAAAAA => ", objecto)
         setButtonLoading(true)
         await api.put("/update-user", objecto)
         .then( async response => {
@@ -113,6 +113,12 @@ console.log("AAAAAA => ", oldPassword)
               }else if(err.response.status == 409){
                 setTitleModal("Erro ao actualizar")
                 setMessageModal("Número ou E-mail já existe")
+                setShowAlert(true)
+                console.log("cdkwmc",err.response.data)
+                console.log(err.response.config.data)
+              }else{
+                setTitleModal("Erro")
+                setMessageModal(" ERROS")
                 setShowAlert(true)
                 console.log("cdkwmc",err.response.data)
                 console.log(err.response.config.data)
@@ -160,11 +166,13 @@ console.log("AAAAAA => ", oldPassword)
         try {
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
-         console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
-         setPhoto(JSON.parse(jsonValue).uri? JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
+         console.log(" PHOTO => ",jsonValue)
+         setPhoto(JSON.parse(jsonValue).uri ? JSON.parse(jsonValue).uri : "encurtador.com.br/bzLQ1")
          console.log('Pegou')
+         
         } catch(e) {
           // read error
+          console.warn(e)
         }
       
        
@@ -177,9 +185,11 @@ async function setObjectValue(value){
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('photo', jsonValue)
       console.log("SeTANDO => ", jsonValue)
+      getMyObject()
     } catch(e) {
       // save error
     }
+
   
     console.log('Done.')
   }
@@ -197,8 +207,6 @@ async function setObjectValue(value){
        
         ImagePicker.showImagePicker(options, async (response) => {
             //console.log('Response = ', response);
-         
-          
             if (response.didCancel) {
               console.log('User cancelled image picker');
             } else if (response.error) {
@@ -234,12 +242,31 @@ async function setObjectValue(value){
             }
           });
       }
-    
+      async function handleInfo(){
+        api.get("/bring-user")
+        .then( res => {
+            console.log("USUARIO => ", res.data.user)
+            setUser(res.data.user)
+            if(res.data.user.photo){
+              setObjectValue({uri:res.data.user.photo})
+
+            }
+        })
+        .catch( err => {
+          if(err.response){
+            console.log("ERRO AO BRING => ", err.response.data)
+          }else{
+            console.log("ERRO AO BRING internet => ", err)
+
+          }
+        })
+      }
     
     useEffect(  ()=> {
-        
+          handleInfo()
          info()
          getMyObject()
+         api.get
 
 
     }, [])
@@ -323,7 +350,7 @@ async function setObjectValue(value){
                             }}
                       
                       />
-
+                      <Text style={{margin:8}}>Mudar senha (Opcional)</Text>
                       <TextInput 
                             placeholder = "Nova Password" 
                             style = { Style.inputForm}

@@ -14,7 +14,7 @@ import Styles from './style';
 function Menu({navigation}) {
     
     
-    const [photo, setPhoto] = useState("https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg")
+    const [photo, setPhoto] = useState("encurtador.com.br/cdGOU")
         
         var navigationView = (
           

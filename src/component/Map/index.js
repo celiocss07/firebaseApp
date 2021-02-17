@@ -579,7 +579,7 @@ console.log("tokennnn => ", token)
           setPricePlus(res.data[1])
         })
         .catch(err => {
-          console.warn(err.response.data)
+          console.warn("PRICE UPDATE ",err.response.data)
         })
       }
       
@@ -643,7 +643,7 @@ console.log("tokennnn => ", token)
               setColorButton('green')
               setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
               setMessageModal(`O valor da sua viagem é ${JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price} Kz \n Obrigado por viajar com a Call Táxi!`)
-              setTitleModal("Viagem Terminanda")
+              setTitleModal("Viagem Terminada")
               setShowAlert(true)
               driverImage()
               setOk(true)
