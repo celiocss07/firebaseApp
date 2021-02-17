@@ -166,8 +166,8 @@ console.log("AAAAAA => ", objecto)
         try {
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
-         console.log(" PHOTO => ",jsonValue)
-         setPhoto(JSON.parse(jsonValue).uri ? JSON.parse(jsonValue).uri : "encurtador.com.br/bzLQ1")
+         console.log(" PHOTO => ",JSON.parse(jsonValue).uri)
+         setPhoto(JSON.parse(jsonValue).uri ? JSON.parse(jsonValue).uri : "https://url.gratis/r4QR4")
          console.log('Pegou')
          
         } catch(e) {
@@ -181,6 +181,7 @@ console.log("AAAAAA => ", objecto)
 
 
 async function setObjectValue(value){
+ 
     try {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('photo', jsonValue)
@@ -188,10 +189,11 @@ async function setObjectValue(value){
       getMyObject()
     } catch(e) {
       // save error
+      console.warn(e)
     }
 
   
-    console.log('Done.')
+   // console.log('Done.')
   }
   async function removeValue() {
     try {
@@ -244,11 +246,12 @@ async function setObjectValue(value){
       }
       async function handleInfo(){
         api.get("/bring-user")
-        .then( res => {
+        .then( async res => {
             console.log("USUARIO => ", res.data.user)
             setUser(res.data.user)
             if(res.data.user.photo){
-              setObjectValue({uri:res.data.user.photo})
+              await AsyncStorage.removeItem('photo')
+              await setObjectValue({uri:res.data.user.photo})
 
             }
         })
@@ -265,8 +268,7 @@ async function setObjectValue(value){
     useEffect(  ()=> {
           handleInfo()
          info()
-         getMyObject()
-         api.get
+         
 
 
     }, [])

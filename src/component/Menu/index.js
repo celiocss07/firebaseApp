@@ -5,6 +5,7 @@ import { DrawerLayoutAndroid} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Map from '../Map';
 import Styles from './style';
+import api from '../../api'
 
 
 
@@ -14,8 +15,8 @@ import Styles from './style';
 function Menu({navigation}) {
     
     
-    const [photo, setPhoto] = useState("encurtador.com.br/cdGOU")
-        
+    const [photo, setPhoto] = useState("https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg")
+    const [user, setUser] = useState(null);   
         var navigationView = (
           
                 <ImageBackground source={require('./../Imagens/Background.jpg')} style={Styles.containerMenu}>
@@ -152,7 +153,21 @@ function Menu({navigation}) {
             aux.current.openDrawer()
             
         }
-
+        async function setObjectValue(value){
+ 
+          try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem('photo', jsonValue)
+            console.log("SeTANDO => ", jsonValue)
+            getMyObject()
+          } catch(e) {
+            // save error
+            console.warn(e)
+          }
+      
+        
+         // console.log('Done.')
+        }
         async function getMyObject() {
           console.log("CHEGOU")
         try {
@@ -165,13 +180,31 @@ function Menu({navigation}) {
           // read error
           console.log("ERRO ", e)
         }
-      
-       
-      
+      }
+      async function handleInfo(){
+        api.get("/bring-user")
+        .then( async res => {
+            console.log("USUARIO => ", res.data.user)
+            setUser(res.data.user)
+            if(res.data.user.photo){
+              await AsyncStorage.removeItem('photo')
+              await setObjectValue({uri:res.data.user.photo})
+
+            }
+        })
+        .catch( err => {
+          if(err.response){
+            console.log("ERRO AO BRING => ", err.response.data)
+          }else{
+            console.log("ERRO AO BRING internet => ", err)
+
+          }
+        })
       }
 
+
       useEffect(() => {
-        getMyObject()
+       handleInfo()
         const backAction = () => {
           Alert.alert("Alerta!", "Deseja mesmo sair ?", [
             {
