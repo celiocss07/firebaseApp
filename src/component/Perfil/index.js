@@ -26,7 +26,7 @@ export default function Perfil( props) {
     const [titleModal, setTitleModal] = useState('none');
     const [colorButton, setColorButton] = useState('green');
     const [avatar, setAvatar] = useState()
-    const [photo, setPhoto] = useState(null)
+    const [photo, setPhoto] = useState("https://img2.gratispng.com/20180401/rle/kisspng-computer-icons-user-profile-male-user-5ac10d05430db1.7381637515226012212747.jpg")
 
     const perfil = {
         nome: "",
@@ -39,8 +39,8 @@ export default function Perfil( props) {
         let token = await AsyncStorage.getItem('userData')
          token =  JSON.parse(token)
          console.log("JOGANDO => ",token)
-         setToken(token.token)
-         token = token.user
+         setToken(token?.token)
+         token = token?.user
          //console.log(token)
        
         setUserName(token.username)
@@ -88,7 +88,7 @@ export default function Perfil( props) {
     async function update(objecto){
 
         
-console.log("AAAAAA => ", objecto)
+        console.log("AAAAAA => ", objecto)
         setButtonLoading(true)
         await api.put("/update-user", objecto)
         .then( async response => {

@@ -24,8 +24,7 @@ const Sobre = () => {
           <Text style={Styles.text}>
           
             Economia e segurança na locomoção da sua equipe, A CALLTaxi, é uma plataforma completa de gestão de transporte de taxi por aplicativo, 
-            que acompanha a jornada de cada um dos seus colaboradores de forma segura e confiável. Temos central de atendimento Atendimento aberto
-             24hs por dia, 7 dias por semana!
+            que acompanha a jornada de cada um dos seus colaboradores de forma segura e confiável.
           </Text>
           <Text style={Styles.text}>
           

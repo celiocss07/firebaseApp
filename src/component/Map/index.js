@@ -114,7 +114,7 @@ export default function Map() {
 
                   <TouchableOpacity onPress={async () => {
                         //call()
-                        url = await `sms:${driverInfo?.phonenumber}${Platform.OS === "ios" ? "&" : "?"}body=${"Olá, caro motorista!"}`
+                        const url = await `sms:${driverInfo?.phonenumber}${Platform.OS === "ios" ? "&" : "?"}body=${"Olá, caro motorista!"}`
 
                         await Linking.openURL(url);
                   }}
@@ -536,7 +536,7 @@ console.log("tokennnn => ", token)
         return(
           carros.map((point, index) => (
             <Marker 
-                coordinate={{latitude:point.latitude, longitude:point.longitude}}  
+                coordinate={{latitude:point?.latitude, longitude:point?.longitude}}  
                 image={ driverImage} 
                 key={`${index}-PointAnnotation`}
             >
@@ -647,12 +647,30 @@ console.log("tokennnn => ", token)
               setShowAlert(true)
               driverImage()
               setOk(true)
+            }else if(remoteMessage.data.cancelled){
+              setOk(true)
+              setDriverInfo(null)
+              setLocation(null)
+              driverImage()
+              setOk(true)
             }
+
+
           });
           messaging()
           .getToken()
           .then(token => {
             setMyToken(token)
+            api.post("set-player-id-user", {
+              player_id: token
+            })
+            .then( res => {
+              console.log("Token actualizado com sucesso!")
+            })
+            .catch(err => {
+              console.log("ERRO AO ACTUALIZAR TOKEN ")
+            })
+
             console.log(token);
           });
 

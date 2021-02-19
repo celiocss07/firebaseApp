@@ -38,7 +38,7 @@ async function getinfo(){
 
         if(response.status){
             if(response.status == 200){
-                response.data.map((item, index ) => console.log("BURRO => ",item.reserveto))
+                response.data.map((item, index ) => console.log("BURRO => ",item))
                 await setReferal(response.data);
             }
              if(response.status == 204)
@@ -121,7 +121,8 @@ useEffect(
                                   <Text style = {Styles.desc}> <Text style = {Styles.texto} > De : </Text> {item.reservefrom.address} </Text>
                                   <Text style = {Styles.desc}> <Text style = {Styles.texto} > Para: </Text> {item.reserveto.address} </Text>
                                   <Text style = {Styles.desc}> <Text style = {Styles.texto} > Data: </Text> {item.reservedate} </Text>
-                                  <Text style = {Styles.desc}> <Text style = {Styles.texto} > Valor: </Text> {item.price} </Text>
+                                  <Text style = {Styles.desc}> <Text style = {Styles.texto} > Valor: </Text> {item.price} Kz</Text>
+                                  <Text style = {Styles.desc}> <Text style = {Styles.texto} > Motorista: </Text> {item.driver} </Text>
                                   <Text style = {Styles.desc2(item.cor)}> <Text style = {Styles.texto} > Status: </Text> {item.status} </Text>
                               </View>
                           </TouchableOpacity>

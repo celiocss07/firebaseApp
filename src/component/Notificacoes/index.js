@@ -6,7 +6,7 @@ import api from '../../api'
 
 // import { Container } from './styles';
 
-const Notificacoes = () => {
+const Notificacoes = ({navigation}) => {
 
     const [loading, setLoading]  = useState(true);
     const [notify, setNotify]  = useState(null);
@@ -99,7 +99,7 @@ const Notificacoes = () => {
                                     item?.link ?
                                     <TouchableOpacity 
                                         onPress={ ( ) => {
-
+                                            navigation.navigate('WebView', {url: item.link})
                                         }}
                                         style={Styles.btnLink}
                                     > 
