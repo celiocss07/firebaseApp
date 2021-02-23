@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, Fragment} from 'react'
-import { View, Text, StyleSheet, PermissionsAndroid, Image, Alert, TextInput, TouchableOpacity, ActivityIndicator, Linking } from 'react-native'
+import { View, Text, StyleSheet, PermissionsAndroid, Image, Alert, TextInput, TouchableOpacity, ActivityIndicator, Linking, AppState } from 'react-native'
 import MapView, { Marker} from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
@@ -185,9 +185,6 @@ export default function Map() {
         </Container>
     )
 }
-
-
-
    function Details( props ) {
     console.log("Tela de Detalhes => ",props)
 
@@ -275,6 +272,7 @@ console.log("tokennnn => ", token)
         data.passenger = await passanger
         data.paymethod = payMethod=="Multicaixa" ? "card" : "cash"
         data.price = price
+        data.idcategory = selectedPlan=="Economico"?1:2
         
         await api.post("/confirm-drive",{
 
@@ -491,6 +489,8 @@ console.log("tokennnn => ", token)
   const [colorButton, setColorButton] = useState('green');
   const [alertMsgStyle, setAlertMsgStyle] = useState({fontSize:16, textAlign:'center'});
   const [reserveInfo, setReserveInfo] = useState(null)
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
     async function permission() {
         PermissionsAndroid.requestMultiple(
               [
@@ -582,11 +582,93 @@ console.log("tokennnn => ", token)
           console.warn("PRICE UPDATE ",err.response.data)
         })
       }
+      const _handleAppStateChange = async (nextAppState) => {
+        if (
+          appState.current.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+          console.log("App has come to the foreground!");
+          let json = await AsyncStorage.getItem("reserve")
+          json = JSON.parse(json)
+              console.log("JSON", json)
+
+              if(json.accepted){
+                //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
+                console.log(JSON.parse(json.accepted))
+                api.get("/drivers-status",{
+  
+                })
+                .then( response => {
+                  setColorButton('orange')
+                setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
+                setMessageModal("Sua corrida foi aceite, seu motorista está a caminho!")
+                setTitleModal("Viagem aceite")
+                setShowAlert(true)
+                
+                  console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(json.accepted).username))
+                  setCarros([response.data.find(e => e.username==JSON.parse(json.accepted).username)])
+                  setLocation(response.data.find(e => e.username==JSON.parse(json.accepted).username))
+                  setDriverInfo(response.data.find(e => e.username==JSON.parse(json.accepted).username))
+                
+                })
+                .catch( err => {
+                  if(err.response){
+                    console.log(" Erro na requisição => ", err.response.data)
+                  }else{
+                    console.log(" Erro na app => ", err)
+                  }
+                })
+                console.log(carros)
+
+            }else if(json.inLocal){
+              console.log(JSON.parse(json.inLocal))
+              setLocation({
+                latitude: JSON.parse(json.inLocal).to.lat,
+                longitude: JSON.parse(json.inLocal).to.lon
+              })
+              setOk(false)
+              //Driver()
+              //setDriverInfo(null)
+              //setColorButton('orange')
+              //setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
+              //setMessageModal("A Call Táxi deseja-lhe uma boa viagem!")
+              //setTitleModal("Viagem pronta")
+              //setShowAlert(true)
+            }else if(json.finished){
+              console.log(JSON.parse(json.finished)?.reserveInfo?.price)
+              setOk(true)
+              setDriverInfo(null)
+              
+              setLocation(null)
+              setColorButton('green')
+              setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
+              setMessageModal(`O valor da sua viagem é ${JSON.parse(json.finished)?.reserveInfo?.price} Kz \n Obrigado por viajar com a Call Táxi!`)
+              setTitleModal("Viagem Terminada")
+              setShowAlert(true)
+              driverImage()
+              setOk(true)
+              await AsyncStorage.removeItem("reserve")
+            }else if(json.cancelled){
+              await AsyncStorage.removeItem("reserve")
+              setOk(true)
+              setDriverInfo(null)
+              setLocation(null)
+              driverImage()
+              setOk(true)
+            }
+              
+
+        }
+    
+        appState.current = nextAppState;
+        setAppStateVisible(appState.current);
+        console.log("AppState", appState.current);
+      };
       
 
       useEffect(
         () => {
-          
+          AppState.addEventListener("change", _handleAppStateChange);
           //console.log("LINKING", Linking.getInitialURL())
           Driver()
           priceValues()
@@ -638,7 +720,7 @@ console.log("tokennnn => ", token)
               console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
               setOk(true)
               setDriverInfo(null)
-              
+              await AsyncStorage.removeItem("reserve")
               setLocation(null)
               setColorButton('green')
               setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
@@ -648,6 +730,7 @@ console.log("tokennnn => ", token)
               driverImage()
               setOk(true)
             }else if(remoteMessage.data.cancelled){
+              await AsyncStorage.removeItem("reserve")
               setOk(true)
               setDriverInfo(null)
               setLocation(null)
@@ -657,6 +740,7 @@ console.log("tokennnn => ", token)
 
 
           });
+
           messaging()
           .getToken()
           .then(token => {
@@ -677,9 +761,39 @@ console.log("tokennnn => ", token)
           messaging().onNotificationOpenedApp(remoteMessage => {
             console.log(
               'Notification caused app to open from background state:',
-              remoteMessage.notification,
+              remoteMessage,
             );
             //navigation.navigate(remoteMessage.data.type);
+          });
+
+          messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('Message handled in the background!', remoteMessage);
+            if(remoteMessage.data.accepted){
+              //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
+              console.log(JSON.parse(remoteMessage.data.accepted))
+              await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
+              const json = await AsyncStorage.getItem("reserve")
+              console.log("JSON", json)
+
+          }else if(remoteMessage.data.inLocal){
+            console.log(JSON.parse(remoteMessage.data.inLocal))
+            await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
+            const json = await AsyncStorage.getItem("reserve")
+              console.log("JSON", json)
+
+          }else if(remoteMessage.data.finished){
+            console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
+            await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
+            const json = await AsyncStorage.getItem("reserve")
+              console.log("JSON", json)
+
+          }else if(remoteMessage.data.cancelled){
+            await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
+           
+            const json = await AsyncStorage.getItem("reserve")
+              console.log("JSON", json)
+          }
+            
           });
 
           
@@ -710,7 +824,10 @@ console.log("tokennnn => ", token)
               distanceFilter: 50
             }
           )
-          return unsubscribe;
+          return () => {
+            AppState.removeEventListener("change", _handleAppStateChange);
+            unsubscribe;
+          }
         },[myLocation]
       )
 
@@ -924,7 +1041,8 @@ console.log("tokennnn => ", token)
                               "distance": Math.floor(result.distance),
                               "player_id": myToken,
                               "timeinit": "00:00",
-                              "timeout": "00:00"
+                              "timeout": "00:00",
+                              "idcategory": ""
                             })
                             handleSubmit()
                            

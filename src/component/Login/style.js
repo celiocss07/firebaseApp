@@ -32,11 +32,9 @@ const style = StyleSheet.create({
         fontSize: 13,
         paddingLeft: 16,
         marginBottom: 8,
-        borderColor: "#603915",
-        borderWidth: 1,
-        borderStyle: "solid",
         borderRadius: 5,
-        height: 40
+        height: 40,
+        width:"100%"
     },
     buttonForm: {
         width:"100%",

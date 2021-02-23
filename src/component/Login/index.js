@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert,KeyboardAvoidingView, Platform, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert,KeyboardAvoidingView, Platform, ActivityIndicator, ScrollView, Animated,Keyboard, StyleSheet, ImageBackground } from 'react-native';
 import axios from "axios";
 import Style from './style'
 import api from './../../api'
@@ -20,7 +20,58 @@ export default function Login( props) {
     const [messageModal, setMessageModal] = useState('none');
     const [titleModal, setTitleModal] = useState('none');
     const [colorButton, setColorButton] = useState('green');
-   
+    const [offset] = useState(new Animated.ValueXY({x:0, y: 100}))
+    const [opacity] = useState(new Animated.Value(0))
+    const [logo] = useState(new Animated.ValueXY({x: 200, y:200}))
+    
+    const style = StyleSheet.create({
+        background: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            width:"100%"
+        },
+        containerLogo: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center"
+        },
+        container:{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: "center",
+            width: "100%",
+            marginBottom: 50
+        }
+    })
+     function keyboardDidShow(){
+         Animated.parallel([
+             Animated.timing(logo.x, {
+                 toValue:100,
+                 duration: 900,
+                 
+             }),
+             Animated.timing(logo.y, {
+                 toValue:100,
+                 duration: 400,
+                 
+             })
+         ]).start()
+     }
+     function keyboardDidHide(){
+         Animated.parallel([
+             Animated.timing(logo.x, {
+                 toValue:200,
+                 duration: 400,
+                 
+             }),
+             Animated.timing(logo.y, {
+                 toValue:200,
+                 duration: 400,
+                 
+             })
+         ]).start()
+     }
     async function intialLogin() {
         setButtonLoading(true)
         // console.log(this.state.data)
@@ -91,17 +142,36 @@ export default function Login( props) {
 
     useEffect(() => {
          AsyncStorage.clear()
+         const KeyboardDidShowListener = Keyboard.addListener("keyboardDidShow",keyboardDidShow)
+         const KeyboardHidShowListener = Keyboard.addListener("keyboardDidHide",keyboardDidHide)
+         Animated.parallel([
+             Animated.spring(offset.y, {
+                 toValue:0,
+                 speed: 2,
+                 bounciness: 20,
+                 useNativeDriver: true
+             }),
+             Animated.timing(opacity, {
+                 toValue: 1,
+                 duration: 900,
+                 useNativeDriver: true
+             })
+         ]).start()
         return () => {
-            
+            KeyboardDidShowListener
+            KeyboardHidShowListener
         }
     }, [ ])
   
    
     return (
-        <KeyboardAvoidingView 
-            style={[Style.container, Style.darkBg]} 
-            
+        <ImageBackground 
+            style={
+                style.background
+            }
+            source={ require('./../../assets/login.png')}
         >
+        
             <AwesomeAlert
           show={showAlert}
           showProgress={false}
@@ -117,17 +187,30 @@ export default function Login( props) {
           }}
           
         />
-        <ScrollView style={{width:"100%",backgroundColor:"#FFF"}}>
-            <View style={Style.containerLogo}>
-                    <Image 
+       
+        <View style={style.containerLogo}>
+                    <Animated.Image 
                       source= { require('../Imagens/Logo.png')}
-                      style={Style.logo}
+                      style={{
+                          width:logo.x,
+                          height: logo.y
+                          
+                      }}
                      />
             </View>  
                 
             
-
-            <View style = {Style.containerForm}>
+            <ScrollView style={{flex:1,padding: 20,height: "60%", width: "90%"}}>
+            <Animated.View style = {[
+                style.container,
+                {
+                    opacity: opacity,
+                    transform:[{
+                        translateY: offset.y
+                    }]
+                    
+                }
+                ]}>
 
                   <TextInput 
                         placeholder = "Telefone ou E-mail" 
@@ -161,7 +244,7 @@ export default function Login( props) {
                      
                   </TouchableOpacity>
 
-                  <Text style={{color:"#333",marginTop:16}}>Esqueceu a 
+                  <Text style={{color:"#fff",marginTop:16}}>Esqueceu a 
                         <Text 
                             style={Style.text}
                             onPress={() => props.navigation.navigate('ForgetPassword')}
@@ -169,8 +252,8 @@ export default function Login( props) {
                   </Text>
 
 
-                  <Text style={{color:"#333",margin:8, alignSelf:"center"}}>
-                      <Text style={{color:"black"}}>--------------------------------</Text> 
+                  <Text style={{color:"#fff",margin:8, alignSelf:"center"}}>
+                      <Text style={{color:"#fff"}}>--------------------------------</Text> 
                       <Text style={{fontWeight:"bold"}}> ou </Text>  
                       <Text>----------------------------</Text>
 
@@ -187,14 +270,11 @@ export default function Login( props) {
                       <Text style = {Style.buttonFormText}>Criar conta</Text>
                   </TouchableOpacity>
 
-            </View>
+            </Animated.View>
             </ScrollView>
-              
-            <View style={Style.containerTitle}>
-                    <Text style={{color:"#707070"}}>@2020copyright_SOLTEC</Text>
-            </View>
 
-        </KeyboardAvoidingView>
+        
+        </ImageBackground>
     )
   
 }
