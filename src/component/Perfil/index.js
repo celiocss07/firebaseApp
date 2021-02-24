@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert,CheckBoxProps, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert,CheckBoxProps, KeyboardAvoidingView, ActivityIndicator, ScrollView, ImageBackground } from 'react-native';
 import axios from "axios";
 import api from './../../api'
 import Style from './style';
@@ -293,23 +293,27 @@ async function setObjectValue(value){
           }}
           
         />
+        <ImageBackground 
+        style={Style.container}
+        source={require('./../../assets/HH.png')}
+    >
             <View style={Style.containerLogo}>
 
-            <TouchableOpacity onPress={openPicker}>
+                <TouchableOpacity onPress={openPicker}>
                     <Image 
                       source= { {uri: photo} }
                       style= { Style.logo}
                      />
-                    </TouchableOpacity>
+                </TouchableOpacity>
 
-                <View style={Style.containerTitle}>
+               <View style={Style.containerTitle}>
                     <Text style={Style.msg}>{ userName}</Text>
-                </View>
+        </View>
 
             </View>
 
            
-
+        <ScrollView style={{width: "100%"}}>
             <View style = {Style.containerForm}>
                   <TextInput 
                         placeholder = "Nome de usuário" 
@@ -318,6 +322,8 @@ async function setObjectValue(value){
                         onChangeText = {(e) => {
                             setUserName(e)
                         }}
+                        editable={false}
+                        
                     />
                   
                       <TextInput 
@@ -352,7 +358,7 @@ async function setObjectValue(value){
                             }}
                       
                       />
-                      <Text style={{margin:8}}>Mudar senha (Opcional)</Text>
+                      <Text style={{margin:8, color:"#fff", fontSize: 16}}>Mudar senha (Opcional)</Text>
                       <TextInput 
                             placeholder = "Nova Password" 
                             style = { Style.inputForm}
@@ -392,7 +398,8 @@ async function setObjectValue(value){
               
   
               
-  
+        </ScrollView>
+        </ImageBackground>
         </KeyboardAvoidingView>
     )
   

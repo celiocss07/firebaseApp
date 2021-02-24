@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert, KeyboardAvoidingView, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Linking, TextInput, Alert, KeyboardAvoidingView, ScrollView, ActivityIndicator, ImageBackground, Animated, Keyboard, StyleSheet } from 'react-native';
 import axios from "axios";
 import Style from './style';
 import api from './../../api'
@@ -18,7 +18,7 @@ export default function Login( props) {
     const [messageModal, setMessageModal] = useState('none');
     const [titleModal, setTitleModal] = useState('none');
     const [colorButton, setColorButton] = useState('green');
-    
+    const [logo] = useState(new Animated.ValueXY({x: 200, y:200}))
     //CAR
     const [repeat_pass, setRepeat_pass] = useState("");
   
@@ -28,7 +28,26 @@ export default function Login( props) {
     const emailInput = useRef()
     const passwordInput = useRef()
     const repeatPassInput = useRef()
-
+    const style = StyleSheet.create({
+        background: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            width:"100%"
+        },
+        containerLogo: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center"
+        },
+        container:{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: "center",
+           
+            marginBottom: 50
+        }
+    })
     const [status, setStatus] = useState("Null");
     const [display, setDisplay] = useState('none');
 
@@ -102,8 +121,51 @@ export default function Login( props) {
 
        
     }
-  
+    function keyboardDidShow(){
+        Animated.parallel([
+            Animated.timing(logo.x, {
+                toValue:100,
+                duration: 900,
+                
+            }),
+            Animated.timing(logo.y, {
+                toValue:100,
+                duration: 900,
+                
+            })
+        ]).start()
+    }
+    function keyboardDidHide(){
+        Animated.parallel([
+            Animated.timing(logo.x, {
+                toValue:200,
+                duration: 900,
+                
+            }),
+            Animated.timing(logo.y, {
+                toValue:200,
+                duration: 900,
+                
+            })
+        ]).start()
+    }
+
+    useEffect(() => {
+        const KeyboardDidShowListener = Keyboard.addListener("keyboardDidShow",keyboardDidShow)
+        const KeyboardHidShowListener = Keyboard.addListener("keyboardDidHide",keyboardDidHide)
+        return () => {
+            KeyboardDidShowListener
+            KeyboardHidShowListener
+        }
+    }, [])
+
     return (
+        <ImageBackground 
+        style={
+            style.background
+        }
+        source={ require('./../../assets/login.png')}>
+    
         <KeyboardAvoidingView 
         style = { Style.container}
         behavior={Platform.OS =="ios" ? "padding" : "height"}
@@ -123,22 +185,25 @@ export default function Login( props) {
           }}
           
         />
-            <ScrollView style={{width: "100%", padding: 16,}}>
+           
                         <View style={Style.containerLogo}>
 
-                            <Image 
-                              source= { require('../Imagens/Logo.png')}
-                              style= { Style.logo}
-                             />
+                                <Animated.Image 
+                                  source= { require('../Imagens/Logo.png')}
+                                  style= { {
+                                      width: logo.x,
+                                      height: logo.y
+                                  }}
+                                 />
 
-                            <View style={Style.containerTitle}>
-                                <Text style={Style.msg('flex')}>Cadastre-se</Text>
-                            </View>
-
+                                <View style={Style.containerTitle}>
+                                    <Text style={Style.msg('flex')}>Criar Conta</Text>
+                                </View>
+                      
                         </View>
 
 
-
+                        <ScrollView style={{width: "100%", padding: 16,}}>
                             <View style = {Style.containerForm}>
                               <TextInput 
                                     placeholder = "Nome de usuário" 
@@ -231,6 +296,7 @@ export default function Login( props) {
               
   
         </KeyboardAvoidingView>
+        </ImageBackground>
     )
   
 }

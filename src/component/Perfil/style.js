@@ -8,17 +8,18 @@ const style = StyleSheet.create({
     
    container: {
        flex: 1,
-       
+       width:"100%",
        alignItems: "center"
    },
    containerLogo: {
        width: "100%",
        alignItems: "center",
-       padding: 16
+       padding: 16,
+       
    },
    logo: {
-       width: 80,
-       height: 80,
+       width: 100,
+       height: 100,
        borderRadius: 100
    },
    containerTitle: {
@@ -28,7 +29,8 @@ const style = StyleSheet.create({
    },
    msg: {
        fontSize: 19,
-       fontStyle:"italic"
+       fontStyle:"italic",
+       color:"#fff"
    },
    containerForm: {
        width: "100%",

@@ -267,7 +267,7 @@ export default function Login( props) {
                         
                     }}
                     >
-                      <Text style = {Style.buttonFormText}>Criar conta</Text>
+                      <Text style = {Style.buttonFormText}>Criar Conta</Text>
                   </TouchableOpacity>
 
             </Animated.View>

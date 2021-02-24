@@ -20,6 +20,8 @@ import auth from './auth';
 import { NavigationContainer} from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { color } from 'react-native-reanimated'
+import codePush from 'react-native-code-push'
+
 // import { Container } from './styles';
 
 const Stack = createStackNavigator();
@@ -90,7 +92,7 @@ function App() {
             },
             }} />
           <Stack.Screen name="Historico" component={Historico}  options={{
-            
+            headerTitle:"Histórico",
             headerStyle:{
               backgroundColor:"rgb(0,160,210)"
             },
@@ -147,4 +149,9 @@ function App() {
   );
 }
 
-export default App;
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.IMMEDIATE,
+}
+
+export default codePush(codePushOptions)(App)

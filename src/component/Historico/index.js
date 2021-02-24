@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList, Alert}  from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList, Alert, ImageBackground}  from 'react-native';
 import Styles from './style'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from 'react-native-modal';
@@ -79,7 +79,10 @@ useEffect(
 , [])
 
   return (
-    <View style={Styles.container}>
+    <ImageBackground 
+        style={Styles.container}
+        source={require('./../../assets/login.png')}
+    >
         <AwesomeAlert
           show={showAlert}
           showProgress={false}
@@ -134,7 +137,7 @@ useEffect(
           }
 
 
-    </View>
+    </ImageBackground>
   );
 }
 

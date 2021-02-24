@@ -7,9 +7,8 @@ const style = StyleSheet.create({
 
     
     container : {
-         flex: 1, 
-         
-         backgroundColor:"#FFF",
+         flex: 1,
+         width: "100%"
          
     },
     containerLogo: {
@@ -30,20 +29,17 @@ const style = StyleSheet.create({
     containerForm: {
         width:"100%",
         marginTop:16,
-        alignItems:"center"
+        alignItems:"center",
+        marginBottom: 32
         
         
     },
     inputForm: {
         backgroundColor:"#FFF",
-        fontSize: 13,
+        fontSize: 16,
         paddingLeft: 16,
         marginBottom: 8,
-        borderColor: "#603915",
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderRadius: 5,
-        height: 40,
+        borderRadius: 7,
         width:"80%"
     },
     buttonForm: {
@@ -53,7 +49,8 @@ const style = StyleSheet.create({
         alignSelf: "center",
         borderRadius: 5,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        marginTop: 16
         
     },
     buttonFormNew: {
@@ -68,13 +65,13 @@ const style = StyleSheet.create({
     msg: (text = 'none') => ({
         fontWeight:"bold",
         fontSize: 19,
-        color: "#2E3094",
+        color: "#fff",
         marginBottom: 24,
         display: text
 
     }),
     text: {
-        color: "blue",
+        color: "#fff",
         marginTop:24,
         fontSize: 19
     }
