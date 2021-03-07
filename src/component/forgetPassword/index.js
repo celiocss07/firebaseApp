@@ -39,7 +39,7 @@ export default function Login( props) {
      async function VerifIdentify() {
         setButtonLoading(true)
         
-         console.log( userName)
+         ////console.log( userName)
 
        await api.put("/forget-my-pass-send-code", {
               
@@ -47,9 +47,9 @@ export default function Login( props) {
 
         })
         .then(response => {
-            console.log(response.config.data)
+            ////console.log(response.config.data)
             if(response.status == 204){
-                console.log("not found")
+                ////console.log("not found")
                 setButtonLoading(false)
                 setColorButton('red')
                 setMessageModal(`Nº de telefone ou E-MAIL errado!`)
@@ -57,20 +57,20 @@ export default function Login( props) {
                 setShowAlert(true)
             }else if(response.status == 200){
                 setData(response.data.data)
-                console.log(response.data.data)
+                //console.log(response.data.data)
                 setButtonLoading(false)
                 setExist(true)
                 
                 //userInput.current.disable()
             }
 
-            console.log(response.data)
+            //console.log(response.data)
             
         } )
         .catch(err => {
 
             
-            console.log("cdkwmc",err)
+            //console.log("cdkwmc",err)
            
 
         })
@@ -79,7 +79,7 @@ export default function Login( props) {
     async function updateUser() {
         setButtonLoading(true)
         
-         console.log( userName)
+         //console.log( userName)
 
        await api.put("/forget-my-pass-change", {
               
@@ -92,14 +92,14 @@ export default function Login( props) {
         .then(response => {
 
             if(response.status == 204){
-                console.log("confirm code not exist", response.config.data)
+                //console.log("confirm code not exist", response.config.data)
                 setButtonLoading(false)
                 setColorButton('red')
                 setMessageModal(`Código de confirmação errado!`)
                 setTitleModal("Dados incorrectos")
                 setShowAlert(true)
             }else if(response.status == 200){
-                console.log(response.data)
+                //console.log(response.data)
                 setButtonLoading(false)
                 setFine(true)
                 setButtonLoading(false)
@@ -112,13 +112,13 @@ export default function Login( props) {
                 //userInput.current.disable()
             }
 
-            console.log(response.data)
+            //console.log(response.data)
             
         } )
         .catch(err => {
 
             
-            console.log("cdkwmc",err.response)
+            //console.log("cdkwmc",err.response)
            
 
         })

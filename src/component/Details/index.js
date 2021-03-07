@@ -28,7 +28,7 @@ import planos from './../../assets/car.jpg'
 
 
 export default function Details( props ) {
-    console.log("Tela de Detalhes => ",props)
+    ////console.log("Tela de Detalhes => ",props)
 
     const [selectedPlan, setSelectedPlan] = useState('Economico')
     const [payMethod, setPayMethod] = useState('Multicaixa')
@@ -70,7 +70,7 @@ export default function Details( props ) {
         passanger == 1 ? setPassanger(4) : setPassanger(passanger - 1)
     }
     function notify(dataInfo, token) {
-console.log("tokennnn => ", token)
+////console.log("tokennnn => ", token)
         axios.post("https://fcm.googleapis.com/fcm/send",{
             "data": {dataInfo}, 
 
@@ -88,10 +88,10 @@ console.log("tokennnn => ", token)
         
             }
         }).then( Response => {
-            console.log("Feito com sucesso notify => ",Response.data)
+            ////console.log("Feito com sucesso notify => ",Response.data)
         })
         .catch(err => {
-            console.log("erro ao enviar notify", err.response.data)
+            //console.log("erro ao enviar notify", err.response.data)
         })
     } 
 
@@ -107,27 +107,29 @@ console.log("tokennnn => ", token)
  
         }
         ).then( async (Response) => {
-            console.log("Feito com sucesso => ",Response.data)
-            console.log("Dados => ",data)
+            //console.log("Feito com sucesso => ",Response.data)
+            //console.log("Dados => ",data)
 
            await  api.get('/driver-player-id')
               .then( async(response) => {
-                  console.log(" GET=> ",response.data.info)
+                  //console.log(" GET=> ",response.data.info)
                   let array = []
                   await response.data.info.map((item,index) => {
-                      console.log(item)
+                      //console.log(item)
                       if(item)array.push(item)
                       
                   })
-                  console.log(array)
+                  //console.log(array)
                   await  notify(Response.data,array)
                 })
-              .catch(err => console.log("Token not GET=> ", err.response.data))
+              .catch(err => {
+                  //console.log("Token not GET=> ", err.response.data)
+                })
             
           
         })
         .catch(err => {
-            console.log("erro ao enviar", err.response.data)
+            //console.log("erro ao enviar", err.response.data)
         })
 
 
@@ -137,7 +139,7 @@ console.log("tokennnn => ", token)
     }
     useEffect( 
         ( ) =>{
-            console.log("first => ", props.data.distance)
+            //console.log("first => ", props.data.distance)
         },[]
     )
 
@@ -156,7 +158,7 @@ console.log("tokennnn => ", token)
                             data={Method}
                             initial={payMethod=="Multicaixa"?1:2}
                             selectedBtn={(e) => {
-                                console.log(e)
+                                //console.log(e)
                                 
                                 e.label == "Multicaixa" ? setPayMethod("Multicaixa") : setPayMethod("Dinheiro")
                             }}
@@ -179,7 +181,7 @@ console.log("tokennnn => ", token)
                             data={Plan}
                             initial={selectedPlan=="Economico"?1:2}
                             selectedBtn={(e) => {
-                                console.log(e)
+                                //console.log(e)
                                 
                                 e.label == "Economico" ? setSelectedPlan("Economico") : setSelectedPlan("Plus")
                             }}

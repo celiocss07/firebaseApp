@@ -158,7 +158,7 @@ function Menu({navigation}) {
           try {
             const jsonValue = JSON.stringify(value)
             await AsyncStorage.setItem('photo', jsonValue)
-            console.log("SeTANDO => ", jsonValue)
+            ////console.log("SeTANDO => ", jsonValue)
             getMyObject()
           } catch(e) {
             // save error
@@ -166,25 +166,25 @@ function Menu({navigation}) {
           }
       
         
-         // console.log('Done.')
+         // //console.log('Done.')
         }
         async function getMyObject() {
-          console.log("CHEGOU")
+          //console.log("CHEGOU")
         try {
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
-         console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
+         //console.log(" PHOTO => ",JSON?.parse(jsonValue).uri)
          setPhoto(JSON.parse(jsonValue).uri?JSON.parse(jsonValue).uri : "./../Imagens/Login.png" )
-         console.log('Pegou')
+         //console.log('Pegou')
         } catch(e) {
           // read error
-          console.log("ERRO ", e)
+          //console.log("ERRO ", e)
         }
       }
       async function handleInfo(){
         api.get("/bring-user")
         .then( async res => {
-            console.log("USUARIO => ", res.data.user)
+            //console.log("USUARIO => ", res.data.user)
             setUser(res.data.user)
             if(res.data.user.photo){
               await AsyncStorage.removeItem('photo')
@@ -194,9 +194,9 @@ function Menu({navigation}) {
         })
         .catch( err => {
           if(err.response){
-            console.log("ERRO AO BRING => ", err.response.data)
+            //console.log("ERRO AO BRING => ", err.response.data)
           }else{
-            console.log("ERRO AO BRING internet => ", err)
+            //console.log("ERRO AO BRING internet => ", err)
 
           }
         })

@@ -38,10 +38,10 @@ export default function Perfil( props) {
     async function info(){
         let token = await AsyncStorage.getItem('userData')
          token =  JSON.parse(token)
-         console.log("JOGANDO => ",token)
+         ////console.log("JOGANDO => ",token)
          setToken(token?.token)
          token = token?.user
-         //console.log(token)
+         //////console.log(token)
        
         setUserName(token.username)
         setUserEmail(token.email)
@@ -88,11 +88,11 @@ export default function Perfil( props) {
     async function update(objecto){
 
         
-        console.log("AAAAAA => ", objecto)
+        //console.log("AAAAAA => ", objecto)
         setButtonLoading(true)
         await api.put("/update-user", objecto)
         .then( async response => {
-            console.log(response.data)
+            //console.log(response.data)
             //await AsyncStorage.removeItem('userData')
             await AsyncStorage.setItem('userData', JSON.stringify(response.data))
             await info()
@@ -108,20 +108,20 @@ export default function Perfil( props) {
               if(err.response.status == 401){
                 setMessageModal("Password Incorrecta")
                 setShowAlert(true)
-                console.log("cdkwmc",err.response.data)
-                console.log(err.response.config.data)
+                //console.log("cdkwmc",err.response.data)
+                //console.log(err.response.config.data)
               }else if(err.response.status == 409){
                 setTitleModal("Erro ao actualizar")
                 setMessageModal("Número ou E-mail já existe")
                 setShowAlert(true)
-                console.log("cdkwmc",err.response.data)
-                console.log(err.response.config.data)
+                //console.log("cdkwmc",err.response.data)
+                //console.log(err.response.config.data)
               }else{
                 setTitleModal("Erro")
                 setMessageModal(" ERROS")
                 setShowAlert(true)
-                console.log("cdkwmc",err.response.data)
-                console.log(err.response.config.data)
+                //console.log("cdkwmc",err.response.data)
+                //console.log(err.response.config.data)
               }
                 
                 
@@ -162,13 +162,13 @@ export default function Perfil( props) {
 
 
       async function getMyObject() {
-          console.log("CHEGOU")
+          //console.log("CHEGOU")
         try {
           const jsonValue = await AsyncStorage.getItem('photo')
          //jsonValue = JSON.parse(jsonValue)
-         console.log(" PHOTO => ",JSON.parse(jsonValue).uri)
+         //console.log(" PHOTO => ",JSON.parse(jsonValue).uri)
          setPhoto(JSON.parse(jsonValue).uri ? JSON.parse(jsonValue).uri : "https://url.gratis/r4QR4")
-         console.log('Pegou')
+         //console.log('Pegou')
          
         } catch(e) {
           // read error
@@ -185,7 +185,7 @@ async function setObjectValue(value){
     try {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('photo', jsonValue)
-      console.log("SeTANDO => ", jsonValue)
+      //console.log("SeTANDO => ", jsonValue)
       getMyObject()
     } catch(e) {
       // save error
@@ -193,7 +193,7 @@ async function setObjectValue(value){
     }
 
   
-   // console.log('Done.')
+   // //console.log('Done.')
   }
   async function removeValue() {
     try {
@@ -202,19 +202,19 @@ async function setObjectValue(value){
       // remove error
     }
   
-    console.log('Remove.')
+    //console.log('Remove.')
   }
 
       const openPicker = () => {
        
         ImagePicker.showImagePicker(options, async (response) => {
-            //console.log('Response = ', response);
+            ////console.log('Response = ', response);
             if (response.didCancel) {
-              console.log('User cancelled image picker');
+              //console.log('User cancelled image picker');
             } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
+              //console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
+              //console.log('User tapped custom button: ', response.customButton);
             } else {
                await  setPhoto(response.uri)
               const source =  { uri: response.uri };
@@ -231,13 +231,13 @@ async function setObjectValue(value){
                 }
               })
               .then(async res => {
-                console.log(res.data)
+                //console.log(res.data)
                 await removeValue()
                 await setObjectValue({uri: res?.data?.profile_url})
               })
               .catch(err => {
-                console.log(" eRRO ao subir",err)
-              })   //console.log("Caminho => ",source)
+                //console.log(" eRRO ao subir",err)
+              })   ////console.log("Caminho => ",source)
               // You can also display the image using data:
               // const source = { uri: 'data:image/jpeg;base64,' + response.data };
           
@@ -247,7 +247,7 @@ async function setObjectValue(value){
       async function handleInfo(){
         api.get("/bring-user")
         .then( async res => {
-            console.log("USUARIO => ", res.data.user)
+             console.log("USUARIO => ", res.data.user)
             setUser(res.data.user)
             if(res.data.user.photo){
               await AsyncStorage.removeItem('photo')
@@ -257,9 +257,9 @@ async function setObjectValue(value){
         })
         .catch( err => {
           if(err.response){
-            console.log("ERRO AO BRING => ", err.response.data)
+            //console.log("ERRO AO BRING => ", err.response.data)
           }else{
-            console.log("ERRO AO BRING internet => ", err)
+            //console.log("ERRO AO BRING internet => ", err)
 
           }
         })
@@ -295,7 +295,7 @@ async function setObjectValue(value){
         />
         <ImageBackground 
         style={Style.container}
-        source={require('./../../assets/HH.png')}
+        source={require('./../../assets/perfil.png')}
     >
             <View style={Style.containerLogo}>
 

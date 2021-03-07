@@ -1,4 +1,4 @@
-package com.firebaseapp;
+package com.calltaxiangola;
 
 import com.facebook.react.ReactActivity;
 

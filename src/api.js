@@ -17,13 +17,13 @@ const api =  axios.create({
 api.interceptors.request.use(
     async config => {
         let data = await AsyncStorage.getItem('userData')
-        console.log( "TOKEN  API +>", JSON.parse(data)?.token)
+        //console.log( "TOKEN  API +>", JSON.parse(data)?.token)
         try {
             if (data && JSON.parse(data)?.token)
             config.headers.Authorization = `Bearer ${JSON.parse(data)?.token}`
           return Promise.resolve(config)
         } catch (error) {
-            console.log(error)
+            //console.log(error)
           return Promise.resolve(config)
         }
           

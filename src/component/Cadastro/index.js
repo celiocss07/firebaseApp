@@ -54,9 +54,9 @@ export default function Login( props) {
      async function intialLogin() {
          
         setButtonLoading(true)
-         console.log(pass, userName)
+         //console.log(pass, userName)
          if(userName && phoneNumber && pass && repeat_pass){
-             console.log(userName,userEmail, phoneNumber,pass, repeat_pass)
+             //console.log(userName,userEmail, phoneNumber,pass, repeat_pass)
              if(userName.length < 4){
                 setColorButton('yellow')
                 setMessageModal(`Nome deve conter mais de 3 caracteres!`)
@@ -87,7 +87,7 @@ export default function Login( props) {
                 
             })
             .then(response => {
-                console.log(response.data)
+                //console.log(response.data)
                 props.navigation.navigate('Verificacao')
             } )
             .catch(err => {
@@ -98,14 +98,14 @@ export default function Login( props) {
                         setTitleModal("Dados incorrectos")
                         setShowAlert(true)
                         setButtonLoading(false)
-                        console.log("cdkwmc",err.response.data)
+                        //console.log("cdkwmc",err.response.data)
                     
                 }else{
                     setColorButton('red')
                     setMessageModal("Verifique sua conexão de internet!")
                     setTitleModal("Erro de conexão")
                     setShowAlert(true)
-                    console.log("cdkwmc",err)
+                    //console.log("cdkwmc",err)
                     setButtonLoading(false)
                 }
                 
@@ -197,7 +197,7 @@ export default function Login( props) {
                                  />
 
                                 <View style={Style.containerTitle}>
-                                    <Text style={Style.msg('flex')}>Criar Conta</Text>
+                                    <Text style={Style.msg('flex')}>CRIAR CONTA</Text>
                                 </View>
                       
                         </View>
@@ -275,7 +275,7 @@ export default function Login( props) {
                                      >
                                         {
                                 buttonLoading ? <ActivityIndicator size="small" color="#FFF" />
-                                : <Text style = {Style.buttonFormText}>Próximo</Text>
+                                : <Text style = {Style.buttonFormText}>PRÓXIMO</Text>
                             }
                                     
                                     </TouchableOpacity>

@@ -58,12 +58,12 @@ export default function Map() {
   navigator.geolocation = require("react-native-geolocation-service")
   Geocoder.init("AIzaSyBPFyNBUARMRtPaEGFYZEEL-_ZId8fwRuc")
     socket.on('notification',(data)=> {
-      console.log("SOCKET",data)
+      //console.log("SOCKET",data)
 })
   function DetailsComing( props ) {
     function call(){
 
-      console.log("+++++++++callNumber ", phoneNumber);
+      //console.log("+++++++++callNumber ", phoneNumber);
       let phoneNumber = driverInfo?.phonenumber;
       if (Platform.OS !== "android") {
         phoneNumber = `telprompt:${phoneNumber}`;
@@ -78,7 +78,9 @@ export default function Map() {
             return Linking.openURL(phoneNumber);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err)
+        });
         
     };
     
@@ -186,7 +188,7 @@ export default function Map() {
     )
 }
    function Details( props ) {
-    console.log("Tela de Detalhes => ",props)
+    //console.log("Tela de Detalhes => ",props)
 
     const [selectedPlan, setSelectedPlan] = useState('Economico')
     const [payMethod, setPayMethod] = useState('Multicaixa')
@@ -236,7 +238,7 @@ export default function Map() {
         passanger == 1 ? setPassanger(4) : setPassanger(passanger - 1)
     }
     function notify(dataInfo, token) {
-console.log("tokennnn => ", token)
+//console.log("tokennnn => ", token)
         axios.post("https://fcm.googleapis.com/fcm/send",{
             "data": {dataInfo}, 
 
@@ -327,7 +329,7 @@ console.log("tokennnn => ", token)
     }
     useEffect( 
         ( ) =>{
-            console.log("first => ", props.data.distance)
+            //console.log("first => ", props.data.distance)
         },[]
     )
 
@@ -346,7 +348,7 @@ console.log("tokennnn => ", token)
                             data={Method}
                             initial={payMethod=="Multicaixa"?1:2}
                             selectedBtn={(e) => {
-                                console.log(e)
+                                //console.log(e)
                                 
                                 e.label == "Multicaixa" ? setPayMethod("Multicaixa") : setPayMethod("Dinheiro")
                             }}
@@ -369,7 +371,7 @@ console.log("tokennnn => ", token)
                             data={Plan}
                             initial={selectedPlan=="Economico"?1:2}
                             selectedBtn={(e) => {
-                                console.log(e)
+                                //console.log(e)
                                 if(selectedPlan=="Economico"){
                                   setImage(ser.classe_A)
                                   setPrice((Math.round(props.data.distance) < 3 ? priceEco?.initial_price : ((Math.round(props.data.distance) - 3) * priceEco?.fees_by_3k) + priceEco?.initial_price ))
@@ -461,7 +463,7 @@ console.log("tokennnn => ", token)
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
   
     if (enabled) {
-      console.log('Authorization status:', authStatus);
+      //console.log('Authorization status:', authStatus);
     }
   }
 
@@ -502,7 +504,7 @@ console.log("tokennnn => ", token)
                   message: 'App needs location permission to find your position.'
               }
           ).then(granted => {
-            console.log(granted);
+            //console.log(granted);
             
             //resolve();
           }).catch(err => {
@@ -515,7 +517,7 @@ console.log("tokennnn => ", token)
         setDestination(null)
       }
       function handleInfo( result) {
-        console.log(result.distance,result.duration)
+        //console.log(result.distance,result.duration)
         setDistance(Math.floor(result.distance))
         setDuration(Math.floor(result.duration))
         
@@ -533,17 +535,31 @@ console.log("tokennnn => ", token)
       }
       
       function RenderAnotations(){
-        return(
-          carros.map((point, index) => (
-            <Marker 
-                coordinate={{latitude:point?.latitude, longitude:point?.longitude}}  
-                image={ driverImage} 
-                key={`${index}-PointAnnotation`}
-            >
-                          
-              </Marker>
-          ))
-        )
+
+        
+        if(carros){
+          return(
+            carros?.map((point, index) => {
+              if(point.latitude && point.longitude){
+                return(
+                  <Marker 
+                      coordinate={{latitude:point?.latitude, longitude:point?.longitude}}  
+                      image={ driverImage} 
+                      key={`${index}-PointAnnotation`}
+                  >
+                                
+                    </Marker>
+                )
+              }
+            })
+          )
+        }else{
+          return(
+            <Fragment>
+              
+            </Fragment>
+          )
+        }
       }
       async function Driver() {
         api.get("/drivers-status",{
@@ -555,9 +571,9 @@ console.log("tokennnn => ", token)
         })
         .catch( err => {
           if(err.response){
-            console.log(" Erro na requisição => ", err.response.data)
+            //console.log(" Erro na requisição => ", err.response.data)
           }else{
-            console.log(" Erro na app => ", err)
+            //console.log(" Erro na app => ", err)
           }
         })
   } 
@@ -568,13 +584,13 @@ console.log("tokennnn => ", token)
         //setReserve(aux)
         
 
-        console.log(aux)
+        //console.log(aux)
       }
       
       function priceValues(){
         api.get('get-fees')
         .then( res => {
-          console.log(res.data[0].fees_by_3k,res.data[1].fees_by_3k)
+          //console.log(res.data[0].fees_by_3k,res.data[1].fees_by_3k)
           setPriceEco(res.data[0])
           setPricePlus(res.data[1])
         })
@@ -587,14 +603,14 @@ console.log("tokennnn => ", token)
           appState.current.match(/inactive|background/) &&
           nextAppState === "active"
         ) {
-          console.log("App has come to the foreground!");
+          //console.log("App has come to the foreground!");
           let json = await AsyncStorage.getItem("reserve")
           json = JSON.parse(json)
-              console.log("JSON", json)
+              //console.log("JSON", json)
 
               if(json.accepted){
                 //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
-                console.log(JSON.parse(json.accepted))
+                //console.log(JSON.parse(json.accepted))
                 api.get("/drivers-status",{
   
                 })
@@ -605,7 +621,7 @@ console.log("tokennnn => ", token)
                 setTitleModal("Viagem aceite")
                 setShowAlert(true)
                 
-                  console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(json.accepted).username))
+                  //console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(json.accepted).username))
                   setCarros([response.data.find(e => e.username==JSON.parse(json.accepted).username)])
                   setLocation(response.data.find(e => e.username==JSON.parse(json.accepted).username))
                   setDriverInfo(response.data.find(e => e.username==JSON.parse(json.accepted).username))
@@ -613,15 +629,15 @@ console.log("tokennnn => ", token)
                 })
                 .catch( err => {
                   if(err.response){
-                    console.log(" Erro na requisição => ", err.response.data)
+                    //console.log(" Erro na requisição => ", err.response.data)
                   }else{
-                    console.log(" Erro na app => ", err)
+                    //console.log(" Erro na app => ", err)
                   }
                 })
-                console.log(carros)
+                //console.log(carros)
 
             }else if(json.inLocal){
-              console.log(JSON.parse(json.inLocal))
+              //console.log(JSON.parse(json.inLocal))
               setLocation({
                 latitude: JSON.parse(json.inLocal).to.lat,
                 longitude: JSON.parse(json.inLocal).to.lon
@@ -635,7 +651,7 @@ console.log("tokennnn => ", token)
               //setTitleModal("Viagem pronta")
               //setShowAlert(true)
             }else if(json.finished){
-              console.log(JSON.parse(json.finished)?.reserveInfo?.price)
+              //console.log(JSON.parse(json.finished)?.reserveInfo?.price)
               setOk(true)
               setDriverInfo(null)
               
@@ -662,21 +678,21 @@ console.log("tokennnn => ", token)
     
         appState.current = nextAppState;
         setAppStateVisible(appState.current);
-        console.log("AppState", appState.current);
+        //console.log("AppState", appState.current);
       };
       
 
       useEffect(
         () => {
           AppState.addEventListener("change", _handleAppStateChange);
-          //console.log("LINKING", Linking.getInitialURL())
+          ////console.log("LINKING", Linking.getInitialURL())
           Driver()
           priceValues()
           const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.log(remoteMessage.data)
+            //console.log(remoteMessage.data)
             if(remoteMessage.data.accepted){
                 //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
-                console.log(JSON.parse(remoteMessage.data.accepted))
+                //console.log(JSON.parse(remoteMessage.data.accepted))
                 api.get("/drivers-status",{
   
                 })
@@ -687,7 +703,7 @@ console.log("tokennnn => ", token)
                 setTitleModal("Viagem aceite")
                 setShowAlert(true)
                 
-                  console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
+                  //console.log(" Position Drivers IN NOTIFY => ", response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
                   setCarros([response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username)])
                   setLocation(response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
                   setDriverInfo(response.data.find(e => e.username==JSON.parse(remoteMessage.data.accepted).username))
@@ -695,15 +711,15 @@ console.log("tokennnn => ", token)
                 })
                 .catch( err => {
                   if(err.response){
-                    console.log(" Erro na requisição => ", err.response.data)
+                    //console.log(" Erro na requisição => ", err.response.data)
                   }else{
-                    console.log(" Erro na app => ", err)
+                    //console.log(" Erro na app => ", err)
                   }
                 })
-                console.log(carros)
+                //console.log(carros)
 
             }else if(remoteMessage.data.inLocal){
-              console.log(JSON.parse(remoteMessage.data.inLocal))
+              //console.log(JSON.parse(remoteMessage.data.inLocal))
               setLocation({
                 latitude: JSON.parse(remoteMessage.data.inLocal).to.lat,
                 longitude: JSON.parse(remoteMessage.data.inLocal).to.lon
@@ -717,7 +733,7 @@ console.log("tokennnn => ", token)
               //setTitleModal("Viagem pronta")
               //setShowAlert(true)
             }else if(remoteMessage.data.finished){
-              console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
+              //console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
               setOk(true)
               setDriverInfo(null)
               await AsyncStorage.removeItem("reserve")
@@ -749,49 +765,46 @@ console.log("tokennnn => ", token)
               player_id: token
             })
             .then( res => {
-              console.log("Token actualizado com sucesso!")
+              //console.log("Token actualizado com sucesso!")
             })
             .catch(err => {
-              console.log("ERRO AO ACTUALIZAR TOKEN ")
+              //console.log("ERRO AO ACTUALIZAR TOKEN ")
             })
 
-            console.log(token);
+            //console.log(token);
           });
 
           messaging().onNotificationOpenedApp(remoteMessage => {
-            console.log(
-              'Notification caused app to open from background state:',
-              remoteMessage,
-            );
+            
             //navigation.navigate(remoteMessage.data.type);
           });
 
           messaging().setBackgroundMessageHandler(async remoteMessage => {
-            console.log('Message handled in the background!', remoteMessage);
+            ////console.log('Message handled in the background!', remoteMessage);
             if(remoteMessage.data.accepted){
               //setDriverInfo(JSON.parse(remoteMessage.data.dataInfo))
-              console.log(JSON.parse(remoteMessage.data.accepted))
+              //console.log(JSON.parse(remoteMessage.data.accepted))
               await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
               const json = await AsyncStorage.getItem("reserve")
-              console.log("JSON", json)
+              //console.log("JSON", json)
 
           }else if(remoteMessage.data.inLocal){
-            console.log(JSON.parse(remoteMessage.data.inLocal))
+            //console.log(JSON.parse(remoteMessage.data.inLocal))
             await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
             const json = await AsyncStorage.getItem("reserve")
-              console.log("JSON", json)
+              //console.log("JSON", json)
 
           }else if(remoteMessage.data.finished){
-            console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
+            //console.log(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
             await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
             const json = await AsyncStorage.getItem("reserve")
-              console.log("JSON", json)
+              //console.log("JSON", json)
 
           }else if(remoteMessage.data.cancelled){
             await AsyncStorage.setItem("reserve",JSON.stringify(remoteMessage.data))
            
             const json = await AsyncStorage.getItem("reserve")
-              console.log("JSON", json)
+              //console.log("JSON", json)
           }
             
           });
@@ -804,7 +817,7 @@ console.log("tokennnn => ", token)
             async ({ coords: { latitude, longitude}}) => {
                 const response = await Geocoder.from({latitude,longitude})
                 const address = response.results[0].formatted_address.split(',')
-                console.log(address)
+                //////console.log(address)
                 setMyaddress(`${address[0]},${address[1]} `)
                 setMyLocation({
                     latitude,
@@ -814,7 +827,7 @@ console.log("tokennnn => ", token)
                 })
             },
             ( error) => {
-                console.log(error.code, error.message)
+                ////console.log(error.code, error.message)
                 permission()
             },
             {
@@ -833,7 +846,7 @@ console.log("tokennnn => ", token)
 
         function handleLocationSelected( data, { geometry }) {
             const { location: { lat: latitude, lng: longitude } } = geometry
-            console.log(data.structured_formatting.main_text)
+            ////console.log(data.structured_formatting.main_text)
             setDestination( 
               {
                 latitude,
@@ -879,13 +892,13 @@ console.log("tokennnn => ", token)
       <TouchableOpacity 
             onPress = { () => {
               setButtonLoading(true)
-              console.log("CONSOLE",reserveInfo)
+              ////console.log("CONSOLE",reserveInfo)
               api.post('cancel-reserve-retracting',{
                 idreserve: reserveInfo?.reservecode,
                 // description: motivo
               })
               .then( async res => {
-                console.log("reserva cancelada => ", res.data)
+                ////console.log("reserva cancelada => ", res.data)
                await axios.post("https://fcm.googleapis.com/fcm/send",{
                         "data": {
                           cancelled:{
@@ -908,10 +921,10 @@ console.log("tokennnn => ", token)
                     
                         }
                     }).then( Response => {
-                        console.log("cancelada com sucesso notify => ",Response.data)
+                        ////console.log("cancelada com sucesso notify => ",Response.data)
                     })
                     .catch(err => {
-                        console.log("erro ao cancelar notify", err.response.data)
+                        ////console.log("erro ao cancelar notify", err.response.data)
                     })
                 //notify(reserveInfo,res.data.players_id)
                 await setDriverInfo(null)
@@ -923,9 +936,9 @@ console.log("tokennnn => ", token)
               })
               .catch( err => {
                 if(err.response){
-                  console.log("Falha ao cancelar viagem => ", err.response.data)
+                  //console.log("Falha ao cancelar viagem => ", err.response.data)
                 }else{
-                  console.log("ERRO NOT CANCELED ", err)
+                  //console.log("ERRO NOT CANCELED ", err)
                 }
               })
 
@@ -990,7 +1003,7 @@ console.log("tokennnn => ", token)
                           origin={myLocation}
                           destination={{latitude: location.latitude,longitude: location.longitude}}
                           onReady={  async (result ) => {
-                            console.log(result, driverInfo)
+                            //console.log(result, driverInfo)
                             //setDuration(result.duration)
                             //await handleInfo(result)
                               mapView.current.fitToCoordinates(result.coordinates,{
@@ -1020,7 +1033,7 @@ console.log("tokennnn => ", token)
                           origin={myLocation}
                           destination={destination}
                           onReady={  async (result ) => {
-                            console.log(result, destination)
+                            //console.log(result, destination)
                             //setDuration(result.duration)
                             setAux ({
                               "reservefrom":{
@@ -1107,7 +1120,7 @@ console.log("tokennnn => ", token)
                   <Back onPress = { ( ) => handleBack()}>
                     <Image source={BackImage} style={{ width: 48, height: 48}} />
                   </Back>
-                  <Details data = {aux} aux={ (ele) => console.log("ACTIVE",ele)} /> 
+                  <Details data = {aux}  /> 
               </Fragment> 
 
             : 

@@ -27,21 +27,21 @@ const Notificacoes = ({navigation}) => {
         api.post("get-notification")
         .then(res => {
             if(res.status == 200){
-                console.log("Há dados", res.data)
+                //console.log("Há dados", res.data)
                 setNotify(res.data)
                 setLoading(false)
             }else{
-                console.log("Não Há dados", res.data)
+                //console.log("Não Há dados", res.data)
                 setMessage("Sem notificações")
                 setLoading(false)
             }
         })
         .catch( err => {
             if(err.response){
-                console.log(err.response.data)
+                //console.log(err.response.data)
                 setMessage("Verifique a sua conexão de internet")
             }else{
-                console.log(err)
+                //console.log(err)
                 setMessage("Verifique a sua conexão de internet")
                 setLoading(false)
             }

@@ -40,11 +40,12 @@ const style = StyleSheet.create({
         paddingLeft: 16,
         marginBottom: 8,
         borderRadius: 7,
-        width:"80%"
+        width:"80%",
+        height: 48
     },
     buttonForm: {
         width:"85%",
-        height:42,
+        height:48,
         backgroundColor: "rgb(0,104,138)",
         alignSelf: "center",
         borderRadius: 5,
@@ -55,7 +56,8 @@ const style = StyleSheet.create({
     },
     buttonFormNew: {
         backgroundColor: "green",
-        width:"55%"
+        width:"55%",
+        height:48,
     },
     buttonFormText: {
         fontWeight:"bold",

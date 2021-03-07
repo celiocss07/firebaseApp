@@ -21,7 +21,7 @@ export default function  Login (props) {
     async function intialLogin() {
          
         
-        console.log(code1+""+code2+""+code3+""+code4+""+code5)
+        //console.log(code1+""+code2+""+code3+""+code4+""+code5)
 
       await api.post("/confirm-sign-up", {
              
@@ -29,11 +29,11 @@ export default function  Login (props) {
            
        })
        .then(response => {
-           console.log(response.data)
+           //console.log(response.data)
            props.navigation.navigate('Login')
        } )
        .catch(err => {
-           console.log("cdkwmc",err)
+           //console.log("cdkwmc",err)
           // Alert.alert("Código Errado!")
        })
    }

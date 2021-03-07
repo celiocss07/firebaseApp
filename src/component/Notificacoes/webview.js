@@ -8,7 +8,7 @@ import { WebView } from 'react-native-webview';
 
 
 const WebPage = ( props) => {
-console.log(props.route.params.url)
+//console.log(props.route.params.url)
 return <WebView source={{ uri: props.route.params.url }} />;
 }
 

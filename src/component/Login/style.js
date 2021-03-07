@@ -29,16 +29,16 @@ const style = StyleSheet.create({
     },
     inputForm: {
         backgroundColor:"#FFF",
-        fontSize: 13,
+        fontSize: 19.5,
         paddingLeft: 16,
         marginBottom: 8,
         borderRadius: 5,
-        height: 40,
+        height: 48,
         width:"100%"
     },
     buttonForm: {
         width:"100%",
-        height:42,
+        height:48,
         backgroundColor: "rgb(0,104,138)",
         alignSelf: "center",
         borderRadius: 5,
@@ -52,12 +52,12 @@ const style = StyleSheet.create({
     },
     buttonFormText: {
         fontWeight:"bold",
-        fontSize: 19,
+        fontSize: 19.5,
         color:"#FFF"
     },
     msg: (text = 'none') => ({
         fontWeight:"bold",
-        fontSize: 13,
+        fontSize: 16,
         color: "red",
         marginTop: 10,
         marginBottom: 15,
@@ -65,7 +65,8 @@ const style = StyleSheet.create({
 
     }),
     text: {
-        color: "red"
+        color: "red",
+        fontSize: 19.5,
     },
     logo:{
         width:200,

@@ -74,10 +74,10 @@ export default function Login( props) {
      }
     async function intialLogin() {
         setButtonLoading(true)
-        // console.log(this.state.data)
+        // ////console.log(this.state.data)
          //const { password, user} = this.state.data
          await AsyncStorage.clear()
-         console.log("Credenciasi => ",password, user, user.match("@"))
+         //console.log("Credenciasi => ",password, user, user.match("@"))
 
        await api.post('/login',{
             
@@ -89,15 +89,15 @@ export default function Login( props) {
 
          })
         .then( async response => {
-           // console.log("sms => ",response.data)
+           // //console.log("sms => ",response.data)
            
             setStatus("Autorizado")
             setDisplay('none')
             props.navigation.navigate('Menu')
             let userData = await AsyncStorage.setItem('userData', JSON.stringify(response.data))
             let resData = await AsyncStorage.getItem('userData')
-            console.log("\n ==============================================")
-            console.log(JSON.parse(resData))
+            //console.log("\n ==============================================")
+            //console.log(JSON.parse(resData))
             await setButtonLoading(false)
         })
         .catch( async err => {
@@ -105,7 +105,7 @@ export default function Login( props) {
                     
                 if(err.response.status == 401){
                     if(err.response.data.msg == "Invalid login, require validate login"){
-                        console.log("Registed",err.response.data)
+                        //console.log("Registed",err.response.data)
                         props.navigation.navigate('Verificacao')
                         await setButtonLoading(false)
                     }else{
@@ -115,10 +115,10 @@ export default function Login( props) {
                         setMessageModal(`Usuário ou senha errado!`)
                         setTitleModal("Dados incorrectos")
                         setShowAlert(true)
-                        console.log("Nao",err.response.config.data)
+                        //console.log("Nao",err.response.config.data)
                     }
                 }
-                console.log("cdkwmc",err.response.data)
+                //console.log("cdkwmc",err.response.data)
                 
                 
 
@@ -239,7 +239,7 @@ export default function Login( props) {
                     >
                         {
                                 buttonLoading ? <ActivityIndicator size="small" color="#FFF" />
-                                : <Text style = {Style.buttonFormText}>Entrar</Text>
+                                : <Text style = {Style.buttonFormText}>ENTRAR</Text>
                             }
                      
                   </TouchableOpacity>
@@ -267,7 +267,7 @@ export default function Login( props) {
                         
                     }}
                     >
-                      <Text style = {Style.buttonFormText}>Criar Conta</Text>
+                      <Text style = {Style.buttonFormText}>CRIAR CONTA</Text>
                   </TouchableOpacity>
 
             </Animated.View>

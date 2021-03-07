@@ -32,12 +32,14 @@ async function getinfo(){
      
     
     setLoading(true)
-    //console.log("\n \n \n => ", token)
+    //////console.log("\n \n \n => ", token)
     await api.get("/my-reserves")
     .then( async response => {
         if(response.status){
             if(response.status == 200){
-                response.data.map((item, index ) => console.log("BURRO => ",item.reserveto))
+                response.data.map((item, index ) => {
+                    ////console.log("BURRO => ",item.reserveto)
+                })
                 await setReferal(response.data);
             }
              if(response.status == 204)
@@ -46,11 +48,11 @@ async function getinfo(){
                  setTitleModal("Informação")
                  setShowAlert(true)
              }
-            console.log(" CANCELADA => ",response.status)
+            //console.log(" CANCELADA => ",response.status)
         }
 
         
-       //await console.log("HELLO", referal)
+       //await //console.log("HELLO", referal)
         //await AsyncStorage.clear()
         //let userData = await AsyncStorage.setItem('userData', JSON.stringify(response))
         //info()
@@ -65,8 +67,8 @@ async function getinfo(){
             setTitleModal("Erro de conexão")
             setShowAlert(true)
         }
-        //console.log("cdkwmc",err.response.data)
-        console.log("cdkwmc",err)
+        ////console.log("cdkwmc",err.response.data)
+        //console.log("cdkwmc",err)
        // Alert.alert("Dados incompletos!")
         //setLoading(false)
 
@@ -170,11 +172,11 @@ useEffect(
                                                     idreserve: d.idreserve
                                                 })
                                                 .then(response => {
-                                                    console.log("Results => ",response.data)
+                                                    //console.log("Results => ",response.data)
                                                     getinfo()
                                                 })
                                                 .catch( err => {
-                                                    console.log("Erro => ", err.response)
+                                                    //console.log("Erro => ", err.response)
                                                 })
                                             }}
                                     >
