@@ -9,6 +9,7 @@ import loginScreen from './component/Login';
 import Detalhes from './component/Details';
 import Politica from './component/Politica';
 import Termos from './component/Termos';
+import otherLocation from './component/otherLocation';
 import Notificacoes from './component/Notificacoes';
 import WebView from './component/Notificacoes/webview';
 import Reservas from './component/Reservas';
@@ -45,6 +46,7 @@ function App() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },}}  />
+          
           <Stack.Screen name="Termos_uso" component={Termos}  options={ { 
             headerTitle:"Termos de Uso", 
             headerTitleAlign: 'center',
@@ -56,7 +58,16 @@ function App() {
               fontWeight: 'bold',
             },
             }}/>
-        
+        <Stack.Screen name="otherLocation" component={otherLocation} options={ { 
+            headerTitle:"Localização", 
+            headerTitleAlign: 'center',
+            headerStyle:{
+            backgroundColor:"rgb(0,160,210)"
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },}}  />
           <Stack.Screen name="ForgetPassword" component={forgetScreen} options={{headerShown:false}} />
           <Stack.Screen name="Notificacoes" component={Notificacoes} options={{
             headerTitle:"Notificaçōes",

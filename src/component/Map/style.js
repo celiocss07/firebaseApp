@@ -48,8 +48,9 @@ export const LocationTimeTextSmall = styled.Text`
 
 export const Back = styled.TouchableOpacity `
   position: absolute;
-  top: ${ Platform.select( { ios: 60, android: 20 })};
+  top: ${ Platform.select( { ios: 60, android: 10 })};
   left: 20px;
+  
 `;
 
 
@@ -60,9 +61,12 @@ export const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         flex: 1,
         
+       
+        
       },
       map: {
         ...StyleSheet.absoluteFillObject,
+        
       },
 })
 

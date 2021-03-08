@@ -9,7 +9,7 @@ export default function Search( props) {
     navigator.geolocation = require("react-native-geolocation-service")
     return (
         <GooglePlacesAutocomplete
-            placeholder='Para onde?'
+            placeholder= "Para onde?"
             
             onPress={onLocationSelected}
             query={{
@@ -34,7 +34,7 @@ export default function Search( props) {
             styles={{
                 container:{
                     position: 'absolute',
-                    top: Platform.select({ ios: 60, android:10 }),
+                    top: Platform.select({ ios: 120, android:64 }),
                     width:"100%"
                 },
                 textInputContainer:{

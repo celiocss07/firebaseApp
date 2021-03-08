@@ -11,7 +11,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { io } from "socket.io-client";
-
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import {
   styles, 
@@ -51,6 +51,52 @@ import planos from './../../assets/car.jpg'
 const socket = io("http://192.168.100.7:8082");
 
 
+const stylesRating = StyleSheet.create({ 
+  container: { 
+    flex: 1, 
+    backgroundColor: 'white', 
+    padding: 10, 
+    justifyContent: 'center', 
+    textAlign: 'center', 
+  }, 
+  textStyle: { 
+    textAlign: 'center', 
+    fontSize: 23, 
+    color: '#000', 
+    marginTop: 15, 
+  }, 
+  buttonStyle: { 
+    justifyContent: 'center', 
+    flexDirection: 'row', 
+    marginTop: 30, 
+    padding: 15, 
+    backgroundColor: '#8ad24e', 
+  }, 
+  otherStyle: { 
+    justifyContent: 'center', 
+    height: 44,
+    width:"80%",
+    marginTop: 8, 
+    marginLeft:16,
+    padding: 15, 
+    backgroundColor: '#8ad24e',
+    borderRadius: 8, 
+  },
+  buttonTextStyle: { 
+    color: '#fff', 
+    textAlign: 'center', 
+  }, 
+  ratingBarStyle: { 
+    justifyContent: 'center', 
+    flexDirection: 'row', 
+    marginTop: 30, 
+  }, 
+  starImageStyle: { 
+    width: 40, 
+    height: 40, 
+    resizeMode: 'cover', 
+  }, 
+});
 
 export default function Map() {
   
@@ -474,6 +520,7 @@ export default function Map() {
     longitudeDelta: 0.0045
   })
   const [location,setLocation] = useState(null)
+  const [otherLocation,setOtherLocation] = useState(null)
   const [carros, setCarros] = useState([])
   const [ destination, setDestination ] = useState(null)
   const [ myAddress, setMyaddress ] = useState(null)
@@ -493,6 +540,13 @@ export default function Map() {
   const [reserveInfo, setReserveInfo] = useState(null)
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [defaultRating, setDefaultRating] = useState(2); 
+  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+  const [showModal, setShowModal] = useState(false);
+  const [locationModal, setLocationModal] = useState(false);
+  const [valorViagem, setValorViagen] = useState(1000);
+  const [searchFocused, setSearchFocused ] = useState( null)
+
     async function permission() {
         PermissionsAndroid.requestMultiple(
               [
@@ -681,6 +735,65 @@ export default function Map() {
         //console.log("AppState", appState.current);
       };
       
+      const  RatingBar = () => { 
+        return ( 
+          <View style={stylesRating.container}> 
+    
+              <View style={stylesRating.priceContainer}>
+                <Text style={stylesRating.textStyle}> 
+                  Valor da sua corrida
+                </Text>
+                <Text style={[stylesRating.textStyle, {fontWeight:"bold", fontSize: 29}]}> { valorViagem} kz</Text>
+              </View>
+    
+            <Text style={stylesRating.textStyle}> 
+              Classifique o seu motorista
+            </Text>
+              <View style={stylesRating.ratingBarStyle}> 
+          
+            {maxRating.map((item, key) => { 
+              return ( 
+                <TouchableOpacity 
+                  activeOpacity={0.7} 
+                  key={item} 
+                  onPress={() => {
+                  //etDefaultRating(item)
+                  setDefaultRating(item)
+                  }}> 
+                  
+                  <Image 
+                    style={stylesRating.starImageStyle} 
+                    source={ 
+                      item <= defaultRating
+                        ? require('../../assets/star_filled.png') 
+                        : require('../../assets/star_corner.png') 
+                    } 
+                  /> 
+                </TouchableOpacity> 
+              ); 
+            })} 
+          </View> 
+          <Text style={stylesRating.textStyle}> 
+              {defaultRating} / {Math.max.apply(null, maxRating)} 
+            </Text> 
+            <TouchableOpacity 
+              activeOpacity={0.7} 
+              style={stylesRating.buttonStyle} 
+              onPress={() => {
+                setShowModal(false)
+                setValorViagen(1000)
+                
+              }}> 
+              <Text style={stylesRating.buttonTextStyle}> 
+                Classificar
+              </Text> 
+            </TouchableOpacity> 
+    
+          </View>
+    
+        ); 
+      }; 
+
 
       useEffect(
         () => {
@@ -738,11 +851,12 @@ export default function Map() {
               setDriverInfo(null)
               await AsyncStorage.removeItem("reserve")
               setLocation(null)
-              setColorButton('green')
-              setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
-              setMessageModal(`O valor da sua viagem é ${JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price} Kz \n Obrigado por viajar com a Call Táxi!`)
-              setTitleModal("Viagem Terminada")
-              setShowAlert(true)
+              //setColorButton('green')
+              //setAlertMsgStyle({fontSize:16,fontWeight: 'normal', textAlign: 'center'})
+              setValorViagen(JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price)
+              //setMessageModal(`O valor da sua viagem é ${JSON.parse(remoteMessage.data.finished)?.reserveInfo?.price} Kz \n Obrigado por viajar com a Call Táxi!`)
+              //setTitleModal("Viagem Terminada")
+              //setShowAlert(true)
               driverImage()
               setOk(true)
             }else if(remoteMessage.data.cancelled){
@@ -856,6 +970,33 @@ export default function Map() {
               }
             )
         }
+        function handleLocationSelectedOrigin( data, { geometry }) {
+          const { location: { lat: latitude, lng: longitude } } = geometry
+          ////console.log(data.structured_formatting.main_text)
+          setOtherLocation( 
+            {
+              latitude,
+              longitude,
+              title: data.structured_formatting.main_text,
+              latitudeDelta: 0.0045,
+    longitudeDelta: 0.0045
+
+            }
+          )
+          setMyLocation(
+            {
+              latitude,
+              longitude,
+              title: data.structured_formatting.main_text,
+              latitudeDelta: 0.0045,
+    longitudeDelta: 0.0045
+
+            }
+          )
+          setLocationModal(false)
+      }
+
+
         const mapView = useRef()
         const [visivel, setVisivel] = useState(false)
         const [motivo, setMotivo] = useState(" ")
@@ -984,6 +1125,14 @@ export default function Map() {
           messageStyle={alertMsgStyle}
           
         />
+
+        <Modal isVisible={showModal}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor:"#fff",height:"60%"}}>
+                <RatingBar />
+            </View>
+        </Modal>
+
+        
         <MapView
           
           style={styles.map}
@@ -1030,15 +1179,16 @@ export default function Map() {
               <Fragment>
 
                     < Directions 
-                          origin={myLocation}
+                          origin={otherLocation? otherLocation: myLocation}
                           destination={destination}
                           onReady={  async (result ) => {
                             //console.log(result, destination)
                             //setDuration(result.duration)
                             setAux ({
                               "reservefrom":{
-                                "lat": myLocation.latitude,
-                                "lon": myLocation.longitude,
+                                "lat": otherLocation? otherLocation.latitude: myLocation.latitude,
+                                "lon": otherLocation? otherLocation.longitude: myLocation.longitude,
+
                                 "address": myAddress
                               },
                               "reserveto":{
@@ -1124,11 +1274,124 @@ export default function Map() {
               </Fragment> 
 
             : 
+            <Fragment>
+               <TouchableOpacity 
+              activeOpacity={0.7} 
+              style={stylesRating.otherStyle} 
+              onPress={() => {
+                //setShowModal(false)
+                //setValorViagen(1000)
+                setLocationModal(true)
+                
+              }}> 
+              <Text style={stylesRating.buttonTextStyle}> 
+                Alterar Local de Recolha
+              </Text> 
+            </TouchableOpacity> 
             <Search onLocationSelected={ handleLocationSelected } />
+            </Fragment>
+            
             
          
         }
 
+        <Modal isVisible={locationModal}>
+        
+            <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor:"#fff",height:"80%", flex:1}}>
+            <Back onPress = { ( ) => {
+          setLocationModal(false)
+        }}>
+                    <Image source={BackImage} style={{ width: 48, height: 48}} />
+                  </Back>
+                
+                <GooglePlacesAutocomplete
+            placeholder= "Minha Localização"
+            
+            onPress={ handleLocationSelectedOrigin}
+
+            query={{
+              key: 'AIzaSyBPFyNBUARMRtPaEGFYZEEL-_ZId8fwRuc',
+              language: 'pt',
+              components: 'country:ao',
+            }}
+            
+
+            textInputProps={{
+                
+                
+                onFocus: () => { setSearchFocused("auto")},
+                onBlur: () => { setSearchFocused(null)},
+                autoCapitalize: "none",
+                autoCorrect: false,
+                
+            }}
+            listViewDisplayed={searchFocused}
+            fetchDetails
+            enablePoweredByContainer={false}
+            styles={{
+                container:{
+                    position: 'absolute',
+                    top: Platform.select({ ios: 120, android:64 }),
+                    width:"100%"
+                },
+                textInputContainer:{
+                    flex: 1,
+                    backgroundColor: 'transparent',
+                    height: 54,
+                    marginHorizontal: 20,
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0
+                },
+                textInput:{
+                    height: 54,
+                    margin: 0,
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    marginTop: 0,
+                    marginLeft: 0,
+                    marginRight: 0,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOpacity: 0.1,
+                    shadowOffset: { x: 0, y: 0 },
+                    shadowRadius: 15,
+                    borderWidth: 1,
+                    borderColor: "#DDD",
+                    fontSize: 19.5
+
+
+                },
+                listView:{
+                    borderWidth: 1,
+                    borderColor: "#DDD",
+                    backgroundColor: '#FFF',
+                    marginHorizontal: 20,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOpacity: 0.1,
+                    shadowOffset: { x:0, y: 0 },
+                    shadowRadius: 15,
+                    marginTop: 10
+                },
+                description:{
+                    fontSize: 16
+                },
+                row:{
+                    padding: 20,
+                    height: 58
+                }
+            }}
+            
+
+    />
+               
+
+                
+            </View>
+            
+        </Modal>
         
       </View>
     )
